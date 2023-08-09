@@ -1,0 +1,41 @@
+import type { IMasterAccount } from "@/types/masters/masterChartOfAccount";
+
+export interface IGeneralSettingPurchase {
+  id: string;
+  generalsetting_id: string;
+  generalsettingpurch_hutang_id: string | null;
+  generalsettingpurch_unbill_id: string | null;
+  generalsettingpurch_uangmuka_id: string | null;
+  generalsettingpurch_uangmukaorder_id: string | null;
+  generalsettingpurch_bg_id: string | null;
+  generalsettingpurch_selisihretur_id: string | null;
+  generalsettingpurch_ppn_id: string | null;
+  masterbussiness_id: string;
+  generalsettingpurch_priceperpiece: boolean;
+  generalsettingpurch_bgpotonghutang: boolean;
+  generalsettingpurch_cekplafonquote: boolean;
+  generalsettingpurch_cekplafonorder: boolean;
+  generalsettingpurch_cekplafon: boolean;
+  generalsettingpurch_quotemaxitem: number;
+  generalsettingpurch_ordermaxitem: number;
+  generalsettingpurch_invoicemaxitem: number;
+  generalsettingpurch_quotedirectprint: boolean;
+  generalsettingpurch_orderdirectprint: boolean;
+  generalsettingpurch_invoicedirectprint: boolean;
+  generalsettingpurch_returdirectprint: boolean;
+  generalsettingpurch_quotetypeprint: boolean;
+  generalsettingpurch_ordertypeprint: boolean;
+  generalsettingpurch_invoicetypeprint: boolean;
+  generalsettingpurch_returtypeprint: boolean;
+  generalsettingpurch_ubahhargatarikquoteorder: boolean;
+  generalsettingpurch_ubahhargatarikorderfaktur: boolean;
+  generalsettingpurch_ubahdisctarikquoteorder: boolean;
+  generalsettingpurch_ubahdisctarikorderfaktur: boolean;
+  purchase_hutang?: IMasterAccount | null;
+  purchase_unbill?: IMasterAccount | null;
+  purchase_uangmuka?: IMasterAccount | null;
+  purchase_uangmukaorder?: IMasterAccount | null;
+  purchase_bg?: IMasterAccount | null;
+  purchase_selisihretur?: IMasterAccount | null;
+  purchase_ppn?: IMasterAccount | null;
+}

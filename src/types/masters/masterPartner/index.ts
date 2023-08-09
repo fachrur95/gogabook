@@ -1,0 +1,46 @@
+import type { ICity } from "@/types/cores/areas/city";
+import type { IBusiness } from "@/types/cores/business";
+import type { IPlatform } from "@/types/cores/platform";
+import type { IUser } from "@/types/cores/user";
+import type { IMasterOther } from "../masterOther";
+import type { IMasterPartnerCategory } from "./masterPartnerCategory";
+import type { IMasterPartnerEmployee } from "./masterPartnerEmployee";
+import type { IMasterPartnerSupport } from "./masterPartnerSupport";
+import type { IMasterPartnerTaxation } from "./masterPartnerTaxation";
+
+export interface IMasterPartner {
+  id: string;
+  masterpartnercategory_id: string | null;
+  mastercreditterm_id: string | null;
+  masterexchange_id: string | null;
+  masterpartner_staff: string | null;
+  masterstore_id: string | null;
+  masterfinger_id: string | null;
+  masterareakota_id: string | null;
+  masteruser_id: string | null;
+  masterplatform_id: string;
+  masterbussiness_id: string;
+  masterpartner_description: string;
+  masterpartner_alias: string | null;
+  masterpartner_email: string | null;
+  masterpartner_limittransaksi: number | null;
+  masterpartner_limitqtynotaunpaid: number | null;
+  masterpartner_limitmaxhari: number | null;
+  masterpartner_includeppn: boolean;
+  masterpartner_active: boolean;
+  masterpartner_oleh: string;
+  masterbussiness?: IBusiness | null;
+  masterplatform?: IPlatform | null;
+  partner_kota?: ICity | null;
+  masteruser?: IUser | null;
+  partner_term?: IMasterOther | null;
+  partner_exchange?: IMasterOther | null;
+  partner_store?: IMasterOther | null;
+  partner_staff_default?: IMasterPartner | null;
+  masterpartnercategory?: IMasterPartnerCategory | null;
+  partner_employee?: IMasterPartnerEmployee | null;
+  partner_pajak?: IMasterPartnerTaxation | null;
+  masterpartnersupports?: IMasterPartnerSupport[];
+  description?: string | null;
+  title?: string | null;
+}
