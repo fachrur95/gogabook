@@ -9,6 +9,7 @@ import type { ITransactionFakturDetail } from "../taxInvoice/taxInvoiceDetail";
 
 export interface ITransaction {
   id: string;
+  trans_id: string;
   transparent_id: string | null;
   masterwarehouse_id: string | null;
   masterstore_id: string | null;

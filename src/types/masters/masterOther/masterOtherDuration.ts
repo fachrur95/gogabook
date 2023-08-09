@@ -2,6 +2,7 @@ import type { IBusiness } from "@/types/cores/business";
 
 export interface IMasterOtherDuration {
   id: string;
+  masterotherdurasi_id: string;
   masterother_id: string;
   masterbussiness_id: string;
   masterotherdurasi_sellquoteubahdurasimenit: number;

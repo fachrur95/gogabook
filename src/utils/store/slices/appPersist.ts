@@ -1,13 +1,9 @@
 import menuData from "@/components/layouts/Navigations/SidebarMenu/data";
 import { type StateCreator } from "zustand";
 
-type OpenMenuType = {
-  [key: string]: boolean;
-}
+type OpenMenuType = Record<string, boolean>
 
-interface InitialStateI {
-  [key: string]: boolean;
-}
+type InitialStateI = Record<string, boolean>;
 
 export const initialStateMenu: InitialStateI = Object.fromEntries(
   menuData.map((i) => [i.url, false])
@@ -63,7 +59,7 @@ const initialStateForm = {
 // console.log({ initialStateMenu })
 export interface IAppPersistSlice {
   openMenu: OpenMenuType;
-  // density: "compact" | "standard" | "comfortable";
+  density: "compact" | "standard" | "comfortable";
   setOpenMenu: (url: string) => void;
   form: {
     branch: {
@@ -116,7 +112,7 @@ export interface IAppPersistSlice {
 }
 
 export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
-  // density: "standard",
+  density: "standard",
   openMenu: initialStateMenu,
   setOpenMenu: (url => set((state) => ({ ...state, openMenu: { ...state.openMenu, [url]: !state.openMenu[url] } }))),
   form: initialStateForm,

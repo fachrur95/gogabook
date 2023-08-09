@@ -1,5 +1,6 @@
 export interface IItemBilling {
   id: string;
+  masteritembilling_id: string;
   masteritembilling_description: string;
   masteritembilling_alias: string;
   masteritembilling_freeuser: number;

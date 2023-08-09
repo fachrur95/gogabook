@@ -1,5 +1,6 @@
 export interface IMasterAccountClass {
   id: string;
+  masteraccountclass_id: string;
   masteraccountclass_categoryclass: "FIXED ASSET" | "CURRENT ASSET" | "LONG TERM LIABILITIES" | "CURRENT LIABILITIES" | "EQUITY" | "NET PROFIT" | "REVENUE" | "COGS" | "COGM" | "EXPENSE" | "OTHER REVENUE" | "OTHER EXPENSE" | "TAX";
   masteraccountclass_categoryclasscode: number;
   masteraccountclass_description: string;

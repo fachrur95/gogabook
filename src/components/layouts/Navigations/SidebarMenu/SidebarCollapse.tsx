@@ -54,23 +54,21 @@ const SidebarCollapse = ({ openDrawer, item }: ISidebarCollapse) => {
       <Collapse in={open[item.url]} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {item.children.length > 0 &&
-            item.children.map((child, index) => (
-              <>
-                {child.children.length > 0 ? (
-                  <NavCollapse
-                    key={`list-of-child-col-${index}`}
-                    openDrawer={openDrawer}
-                    item={child}
-                  />
-                ) : (
-                  <SidebarItem
-                    key={`list-of-child-item-${index}`}
-                    openDrawer={openDrawer}
-                    item={child}
-                  />
-                )}
-              </>
-            ))}
+            item.children.map((child, index) =>
+              child.children.length > 0 ? (
+                <NavCollapse
+                  key={`list-of-child-col-${index}`}
+                  openDrawer={openDrawer}
+                  item={child}
+                />
+              ) : (
+                <SidebarItem
+                  key={`list-of-child-item-${index}`}
+                  openDrawer={openDrawer}
+                  item={child}
+                />
+              )
+            )}
         </List>
       </Collapse>
     </>

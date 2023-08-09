@@ -27,7 +27,7 @@ export const defaultUndefinedResult: InfiniteQueryResult<IUserBusiness> = {
   totalPages: 0,
 }
 
-export const credentialBusinessRouter = createTRPCRouter({
+export const credentialPrivilegeRouter = createTRPCRouter({
   getAll: protectedProcedure.input(
     z.object({
       limit: z.number(),
@@ -43,9 +43,9 @@ export const credentialBusinessRouter = createTRPCRouter({
     const { limit, cursor, q } = input;
 
     // const session = await getServerSession();
-
+    // console.log({ accessToken: ctx.session.accessToken })
     const result = await axios.get<InfiniteQueryResult<IUserBusiness>>(
-      `${env.BACKEND_URL}/api/auth/business?page=${cursor ?? 0}&size=${limit}&q=${q}`,
+      `${env.BACKEND_URL}/api/auth/privilege?page=${cursor ?? 0}&size=${limit}&q=${q}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;
@@ -57,16 +57,16 @@ export const credentialBusinessRouter = createTRPCRouter({
     return result;
   }),
 
-  setBusiness: protectedProcedure
+  setPrivilege: protectedProcedure
     .input(z.object({
       id: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
       try {
         const result = await axios.post<ITokenData>(
-          `${env.BACKEND_URL}/api/auth/business`,
+          `${env.BACKEND_URL}/api/auth/privilege`,
           {
-            businessId: input.id,
+            privilegeId: input.id,
           },
           {
             headers: {

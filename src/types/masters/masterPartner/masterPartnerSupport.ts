@@ -3,6 +3,7 @@ import type { IPlatform } from "@/types/cores/platform";
 
 export interface IMasterPartnerSupport {
   id: string;
+  masterpartnersupport_id: string;
   masterpartner_id: string;
   masterplatform_id: string;
   masterbussiness_id: string;

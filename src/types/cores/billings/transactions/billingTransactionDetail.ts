@@ -3,6 +3,7 @@ import type { IItemBilling } from "../itemBilling";
 
 export interface IBillingTransactionDetail {
   id: string;
+  translinebilling_id: string;
   transbilling_id: string;
   masteritembilling_id: string;
   translinebilling_qtyinput: number | null;

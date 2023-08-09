@@ -2,6 +2,7 @@ import type { ITransactionFakturDetail } from "./taxInvoiceDetail";
 
 export interface ITransactionFaktur {
   id: string;
+  transfaktur_id: string;
   masterplatform_id: string;
   masterbussiness_id: string;
   transfaktur_entrydatestart: number;

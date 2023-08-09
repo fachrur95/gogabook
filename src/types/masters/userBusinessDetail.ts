@@ -4,10 +4,12 @@ import type { IMasterWarehouse } from "./masterWarehouse";
 
 export interface IUserBusinessDetail {
   id: string;
-  masteruser_id: string;
+  masteruserbussinessline_id: string;
+  masteruserbussiness_id: string;
+  masterwarehouse_id: string;
+  masterstore_id: string;
   masterbussiness_id: string;
-  masterusercategory_id: string;
-  masteruserbussiness_active: boolean;
+  masteruserbussinessline_default: boolean;
   masterbussiness?: IBusiness | null;
   userbusinessline_store?: IMasterOther | null;
   masterwarehouse?: IMasterWarehouse | null;

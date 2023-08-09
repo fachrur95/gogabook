@@ -6,6 +6,7 @@ import type { IGeneralLedger } from ".";
 
 export interface IGeneralLedgerDetail {
   id: string;
+  glline_id: string;
   gl_id: string;
   transline_id: string | null;
   masteraccount_id: string;

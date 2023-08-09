@@ -2,6 +2,7 @@ import type { IMasterAccount } from "@/types/masters/masterChartOfAccount";
 
 export interface IGeneralSettingPurchase {
   id: string;
+  generalsettingpurch_id: string;
   generalsetting_id: string;
   generalsettingpurch_hutang_id: string | null;
   generalsettingpurch_unbill_id: string | null;

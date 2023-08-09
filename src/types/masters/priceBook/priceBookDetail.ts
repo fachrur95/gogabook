@@ -3,6 +3,7 @@ import type { IMasterItemUom } from "../masterItem/masterItemUom";
 
 export interface IPriceBookDetail {
   id: string;
+  priceline_id: string;
   price_id: string;
   masteritemuom_id: string;
   masteraccountincomecashback_id: string | null;

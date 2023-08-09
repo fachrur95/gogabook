@@ -2,6 +2,7 @@ import type { IBusiness } from "@/types/cores/business";
 
 export interface IMasterPartnerTaxation {
   id: string;
+  masterpartnerpajak_id: string;
   masterpartner_id: string;
   masterbussiness_id: string;
   masterpartnerpajak_nomornpwp: string | null;

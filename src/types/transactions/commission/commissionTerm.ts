@@ -4,6 +4,7 @@ import type { IMasterItem } from "@/types/masters/masterItem";
 
 export interface ICommissionTerm {
   id: string;
+  komisisyarat_id: string;
   komisi_id: string;
   masteritem_id: string;
   masteritemcategory_id: string;

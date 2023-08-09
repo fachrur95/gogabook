@@ -3,6 +3,7 @@ import type { IMasterAccount } from "@/types/masters/masterChartOfAccount";
 import type { IMasterItem } from "@/types/masters/masterItem";
 import type { IMasterItemUom } from "@/types/masters/masterItem/masterItemUom";
 import type { IMasterOther } from "@/types/masters/masterOther";
+import type { IMasterPayment } from "@/types/masters/masterPayment";
 import type { IMasterWarehouse } from "@/types/masters/masterWarehouse";
 import type { ITransaction } from ".";
 import type { ITransactionDetailSerialBatch } from "./transSerialBatch";
@@ -76,6 +77,7 @@ export interface ITransactionDetail {
   transline_taxes?: IMasterOther | null;
   transline_packaging?: IMasterOther | null;
   masterwarehouse?: IMasterWarehouse | null;
+  masterpayment?: IMasterPayment | null;
   masteritem?: IMasterItem | null;
   masteritemuom?: IMasterItemUom | null;
   trans_detail?: ITransaction | null;

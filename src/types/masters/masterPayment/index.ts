@@ -1,13 +1,20 @@
+import type { IBusiness } from "@/types/cores/business";
+import type { IMasterAccount } from "../masterChartOfAccount";
+import type { IMasterOther } from "../masterOther";
 
 export interface IMasterPayment {
   id: string;
-  // masterbussiness_id: string;
-  masterprefix_prefix: string;
-  masterprefix_digit: number;
-  masterprefix_type: number;
-  masterprefix_kelompok: "PEMBELIAN" | "SALDO AWAL" | "PENJUALAN" | "INVENTORY" | "PRODUCTION" | "AKTIVA TETAP" | "JURNAL";
-  masterprefix_description: string;
-  // masterbussiness?: IBusiness | null;
+  masterpayment_id: string;
+  masteraccount_id: string;
+  masterstore_id: string;
+  masterbussiness_id: string;
+  masterpayment_description: string;
+  masterpayment_cardcharges: number;
+  masterpayment_active: boolean;
+  masterpayment_oleh: string;
+  payment_business?: IBusiness | null;
+  payment_account?: IMasterAccount | null;
+  payment_store?: IMasterOther | null;
   description?: string | null;
   title?: string | null;
 }

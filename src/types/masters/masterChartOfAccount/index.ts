@@ -3,6 +3,7 @@ import type { IMasterAccountSubClass } from "./masterAccountSubClass";
 
 export interface IMasterAccount {
   id: string;
+  masteraccount_id: string;
   masteraccountsubclass_id: string;
   masterplatform_id: string;
   masterbussiness_id: string;

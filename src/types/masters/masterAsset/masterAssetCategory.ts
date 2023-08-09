@@ -4,6 +4,7 @@ import type { IMasterAccount } from "../masterChartOfAccount";
 
 export interface IMasterAssetCategory {
   id: string;
+  fixassetcategory_id: string;
   masterfixassetcategory_accountasset: string | null;
   masterfixassetcategory_accountexpense: string | null;
   masterfixassetcategory_accountaccumulation: string | null;

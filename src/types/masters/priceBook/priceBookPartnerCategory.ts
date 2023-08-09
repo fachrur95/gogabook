@@ -3,6 +3,7 @@ import type { IMasterPartnerCategory } from "../masterPartner/masterPartnerCateg
 
 export interface IPriceBookPartnerCategory {
   id: string;
+  pricepartnercategory_id: string;
   price_id: string;
   masterpartnercategory_id: string;
   masterbussiness_id: string;

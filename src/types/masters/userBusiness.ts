@@ -4,6 +4,7 @@ import type { IUserBusinessDetail } from "./userBusinessDetail";
 
 export interface IUserBusiness {
   id: string;
+  masteruserbussiness_id: string;
   masteruser_id: string;
   masterbussiness_id: string;
   masterusercategory_id: string;

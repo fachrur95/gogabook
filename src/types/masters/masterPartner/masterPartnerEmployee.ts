@@ -3,6 +3,7 @@ import type { IMasterOther } from "../masterOther";
 
 export interface IMasterPartnerEmployee {
   id: string;
+  masterpartneremployee_id: string;
   masterpartner_id: string;
   masterjabatan_id: string | null;
   masterbussiness_id: string;

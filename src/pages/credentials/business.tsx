@@ -26,13 +26,19 @@ import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useInView } from "react-intersection-observer";
 import type { IUserBusiness } from "@/types/masters/userBusiness";
 import { useAppStore } from "@/utils/store";
+import { useRouter } from "next/router";
+import useNotification from "@/components/displays/Notification";
+import type { GetServerSideProps } from "next";
+import { getServerAuthSession } from "@/server/auth";
 
 const CredentialBusinessPage: MyPage = () => {
-  const { data: sessionData } = useSession();
+  const router = useRouter();
+  const { data: session, update: updateSession } = useSession();
   const { ref, inView } = useInView();
   const [rows, setRows] = useState<IUserBusiness[]>([]);
   const [countAll, setCountAll] = useState<number>(0);
   const { search, setSearch } = useAppStore();
+  const { setOpenNotification } = useNotification();
 
   const {
     isError,
@@ -42,23 +48,49 @@ const CredentialBusinessPage: MyPage = () => {
     hasNextPage,
     refetch,
     isLoading,
-  } = api.business.getAll.useInfiniteQuery(
+  } = api.credentialBusiness.getAll.useInfiniteQuery(
     { limit: 10, q: search },
     {
       getNextPageParam: (lastPage: InfiniteQueryResult<IUserBusiness>) =>
-        (lastPage.currentPage ?? 0) + 1 ?? undefined,
+        lastPage.currentPage ? (lastPage.currentPage ?? 0) + 1 : undefined,
+      staleTime: 0,
     }
   );
 
+  const mutationSet = api.credentialBusiness.setBusiness.useMutation();
+
+  const handleSetBusiness = async (id: string) => {
+    console.log({ id });
+    await mutationSet.mutateAsync(
+      { id },
+      {
+        onError: (err) => console.log(err),
+        onSuccess: async (data) => {
+          console.log(data);
+          if (!data) {
+            return void setOpenNotification("Error to set business");
+          }
+          await handleUpdateSession({
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+          });
+          void router.push("/credentials/privilege");
+        },
+      }
+    );
+  };
+
   // console.log({ data });
-  /* const handleUpdateSession = async () => {
+  const handleUpdateSession = async (params: {
+    accessToken: string;
+    refreshToken: string;
+  }) => {
     await updateSession({
-      ...sessionData,
-      accessToken: "xxx",
-      refreshToken: "yyy",
+      ...session,
+      ...params,
     });
-  }; */
-  // console.log({ sessionData });
+  };
+  // console.log({ session });
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -104,7 +136,7 @@ const CredentialBusinessPage: MyPage = () => {
           <div>
             <Typography variant="h5">Sign as</Typography>
             <Typography variant="body1">
-              {sessionData?.user.email ?? "-"}
+              {session?.user.email ?? "-"}
             </Typography>
           </div>
         </Box>
@@ -113,8 +145,8 @@ const CredentialBusinessPage: MyPage = () => {
             <TextField
               label="Search"
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
+                endAdornment: (
+                  <InputAdornment position="end">
                     <Search />
                   </InputAdornment>
                 ),
@@ -154,6 +186,9 @@ const CredentialBusinessPage: MyPage = () => {
                   hover
                   key={index}
                   // onClick={() => handleChooseBusiness(business)}
+                  onClick={() =>
+                    void handleSetBusiness(business.masterbussiness?.id ?? "")
+                  }
                 >
                   <TableCell component="th" scope="row">
                     {business.masterbussiness?.generalsetting
@@ -176,6 +211,25 @@ const CredentialBusinessPage: MyPage = () => {
       </Container>
     </React.Fragment>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/api/auth/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
 };
 
 export default CredentialBusinessPage;

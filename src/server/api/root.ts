@@ -1,6 +1,8 @@
 import { exampleRouter } from "@/server/api/routers/example";
 import { createTRPCRouter } from "@/server/api/trpc";
-import { businessRouter } from "./routers/credentials/business";
+import { credentialBusinessRouter } from "./routers/credentials/business";
+import { credentialPrivilegeRouter } from "./routers/credentials/privilege";
+import { credentialStoreRouter } from "./routers/credentials/store";
 
 /**
  * This is the primary router for your server.
@@ -9,8 +11,10 @@ import { businessRouter } from "./routers/credentials/business";
  */
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
-  business: businessRouter,
-});
+  credentialBusiness: credentialBusinessRouter,
+  credentialPrivilege: credentialPrivilegeRouter,
+  credentialStore: credentialStoreRouter,
+})
 
 // export type definition of API
 export type AppRouter = typeof appRouter;

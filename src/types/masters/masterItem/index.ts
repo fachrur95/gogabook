@@ -5,6 +5,7 @@ import type { IMasterItemCategory } from "./masterItemCategory";
 
 export interface IMasterItem {
   id: string;
+  masteritem_id: string;
   masteritemparent_id: string | null;
   masteritemcategory_id: string | null;
   mastertax_id: string | null;

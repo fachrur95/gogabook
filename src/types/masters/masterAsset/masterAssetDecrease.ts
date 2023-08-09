@@ -4,6 +4,7 @@ import type { ITransaction } from "@/types/transactions/trans";
 
 export interface IMasterAssetDecrease {
   id: string;
+  masterfixassetsusut_id: string;
   masterfixasset_id: string;
   trans_id: string | null;
   masterbussiness_id: string;

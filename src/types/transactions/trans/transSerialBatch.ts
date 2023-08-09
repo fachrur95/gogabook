@@ -1,5 +1,6 @@
 export interface ITransactionDetailSerialBatch {
   id: string;
+  transserialbatch_id: string;
   transline_id: string;
   masterbussiness_id: string;
   transserialbatch_mode: 'S' | 'B';

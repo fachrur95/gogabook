@@ -2,6 +2,7 @@ import type { IGeneralSettings } from ".";
 
 export interface IGeneralSettingCheck {
   id: string;
+  generalsettingcek_id: string;
   generalsetting_id: string;
   masterbussiness_id: string;
   generalsettingcek_qtytarikquoteorderbeli: number;

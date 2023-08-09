@@ -6,6 +6,7 @@ import type { IMasterRecipeDetail } from "./masterRecipeDetail";
 
 export interface IMasterRecipe {
   id: string;
+  prod_id: string;
   masteritem_id: string;
   masteritemuom_id: string | null;
   masterplatform_id: string;

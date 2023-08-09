@@ -1,6 +1,7 @@
 
 type PermissionType = {
   id: string;
+  masterrole_id: string;
   parent_id?: number;
   masterrole_description: string;
   masterrole_descriptioneng: string | null;

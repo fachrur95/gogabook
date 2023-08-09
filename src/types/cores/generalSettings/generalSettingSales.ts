@@ -3,6 +3,7 @@ import type { IMasterPartner } from "@/types/masters/masterPartner";
 
 export interface IGeneralSettingSales {
   id: string;
+  generalsettingsell_id: string;
   generalsetting_id: string;
   generalsettingsell_piutang_id: string | null;
   generalsettingsell_unbill_id: string | null;

@@ -1,5 +1,6 @@
 export interface IUser {
   id: string;
+  masteruser_id: string;
   masteruser_email: string | null;
   masteruser_username: string | null;
   masteruser_password: string | null;

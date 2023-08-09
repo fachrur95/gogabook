@@ -3,6 +3,7 @@ import type { IMasterItemUom } from "../masterItem/masterItemUom";
 
 export interface IMasterRecipeDetail {
   id: string;
+  prodline_id: string;
   prod_id: string;
   masteritemuom_id: string;
   masterbussiness_id: string;

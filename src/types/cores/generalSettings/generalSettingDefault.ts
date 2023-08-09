@@ -2,6 +2,7 @@ import type { IGeneralSettings } from ".";
 
 export interface IGeneralSettingDefault {
   id: string;
+  generalsettingdefault_id: string;
   generalsetting_id: string;
   masterbussiness_id: string;
   generalsettingdefault_masteruom_id: string | null;

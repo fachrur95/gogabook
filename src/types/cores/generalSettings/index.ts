@@ -5,6 +5,7 @@ import type { IGeneralSettingSales } from "./generalSettingSales";
 
 export interface IGeneralSettings {
   id: string;
+  generalsetting_id: string;
   masterbussiness_id: string;
   generalsetting_metodehitung: "0" | "1" | "2" | "3";
   generalsetting_isautogeneratekodebarang: boolean;

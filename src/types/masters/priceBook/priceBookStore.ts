@@ -3,6 +3,7 @@ import type { IMasterOther } from "../masterOther";
 
 export interface IPriceBookStore {
   id: string;
+  pricestore_id: string;
   price_id: string;
   masterstore_id: string;
   masterbussiness_id: string;

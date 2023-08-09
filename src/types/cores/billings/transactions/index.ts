@@ -3,6 +3,7 @@ import type { IBillingTransactionDetail } from "./billingTransactionDetail";
 
 export interface IBillingTransaction {
   id: string;
+  transbilling_id: string;
   masterbussiness_id: string;
   transbilling_text: string;
   transbilling_urlpayment: string | null;

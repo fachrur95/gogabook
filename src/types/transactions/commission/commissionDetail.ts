@@ -2,6 +2,7 @@ import type { ICommission } from ".";
 
 export interface ICommissionDetail {
   id: string;
+  komisiline_id: string;
   komisi_id: string;
   masterbussiness_id: string;
   komisiline_valueinput: number | null;

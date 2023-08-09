@@ -10,6 +10,7 @@ import type { IMasterPartnerTaxation } from "./masterPartnerTaxation";
 
 export interface IMasterPartner {
   id: string;
+  masterpartner_id: string;
   masterpartnercategory_id: string | null;
   mastercreditterm_id: string | null;
   masterexchange_id: string | null;

@@ -3,6 +3,7 @@ import type { IGeneralLedgerDetail } from "./glDetail";
 
 export interface IGeneralLedger {
   id: string;
+  gl_id: string;
   trans_id: string;
   masterbussiness_id: string;
   gl_text: string;

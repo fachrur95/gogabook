@@ -1,5 +1,6 @@
 export interface IBankStatementDetail {
   id: string;
+  transbsline_id: string;
   transbs_id: string;
   masterbussiness_id: string;
   transbsline_status: "P" | "C";

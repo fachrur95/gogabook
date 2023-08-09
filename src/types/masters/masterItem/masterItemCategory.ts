@@ -5,6 +5,7 @@ import type { IMasterItemType } from "./masterItemType";
 
 export interface IMasterItemCategory {
   id: string;
+  itemcategory_id: string;
   masteritemtype_id: string;
   masteritemcategory_accountpersediaan: string;
   masteritemcategory_accounthpp: string;

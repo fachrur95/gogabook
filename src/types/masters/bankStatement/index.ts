@@ -3,6 +3,7 @@ import type { IMasterAccount } from "../masterChartOfAccount";
 
 export interface IBankStatement {
   id: string;
+  transbs_id: string;
   masteraccount_id: string;
   masterbussiness_id: string;
   transbs_bank: string;

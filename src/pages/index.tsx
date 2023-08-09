@@ -8,7 +8,9 @@ import { getServerAuthSession } from "@/server/auth";
 import jwtDecode from "jwt-decode";
 import type { ISessionData } from "@/types/session";
 
-const DashboardPage: MyPage = () => {
+const DashboardPage: MyPage<{ sessionData: ISessionData }> = ({
+  sessionData,
+}) => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   return (
@@ -51,7 +53,7 @@ const DashboardPage: MyPage = () => {
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
-            <AuthShowcase />
+            <AuthShowcase sessionData={sessionData} />
           </div>
         </div>
       </main>
@@ -59,18 +61,20 @@ const DashboardPage: MyPage = () => {
   );
 };
 
-function AuthShowcase() {
-  const { data: sessionData } = useSession();
+function AuthShowcase({ sessionData }: { sessionData?: ISessionData }) {
+  const { data: session } = useSession();
+
+  // console.log({ session });
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    { enabled: session?.user !== undefined }
   );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {sessionData && <span>Logged in as {sessionData?.fullName}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button
@@ -127,6 +131,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       session,
+      sessionData,
     },
   };
 };

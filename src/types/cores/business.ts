@@ -2,6 +2,7 @@ import type { IGeneralSettings } from "./generalSettings";
 
 export interface IBusiness {
   id: string;
+  masterbussiness_id: string;
   masterindustri_id: string;
   mastertipeusaha_id: string;
   masterjumlahkaryawan_id: string;

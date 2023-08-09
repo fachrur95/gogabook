@@ -5,6 +5,7 @@ import type { IPriceBookStore } from "./priceBookStore";
 
 export interface IPriceBook {
   id: string;
+  price_id: string;
   masterbussiness_id: string;
   price_description: string;
   price_mode: "1" | "2" | "3" | "4" | "5" | "6" | "7";

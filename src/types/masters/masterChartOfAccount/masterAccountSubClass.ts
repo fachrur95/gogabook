@@ -2,6 +2,7 @@ import type { IMasterAccountClass } from "./masterAccountClass";
 
 export interface IMasterAccountSubClass {
   id: string;
+  masteraccountsubclass_id: string;
   masteraccountclass_id: string;
   masteraccountsubclass_cashflow: string;
   masteraccountsubclass_subcashflow: string;

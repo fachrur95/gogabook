@@ -4,6 +4,7 @@ import type { IMasterOther } from "../masterOther";
 
 export interface IMasterItemUom {
   id: string;
+  masteritemuom_id: string;
   masteritem_id: string;
   masteruom_id: string;
   masterbussiness_id: string;

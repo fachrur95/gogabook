@@ -5,8 +5,8 @@ import {
 import axios from "axios";
 import { z } from "zod";
 import { env } from "@/env.mjs";
-import type { IUserBusiness } from "@/types/masters/userBusiness";
 import type { ITokenData } from "@/types/token";
+import type { IUserBusinessDetail } from "@/types/masters/userBusinessDetail";
 // import { getServerSession } from "next-auth";
 
 export interface InfiniteQueryResult<T> {
@@ -18,7 +18,7 @@ export interface InfiniteQueryResult<T> {
   totalPages: number;
 }
 
-export const defaultUndefinedResult: InfiniteQueryResult<IUserBusiness> = {
+export const defaultUndefinedResult: InfiniteQueryResult<IUserBusinessDetail> = {
   result: [],
   count: 0,
   countAll: 0,
@@ -27,7 +27,7 @@ export const defaultUndefinedResult: InfiniteQueryResult<IUserBusiness> = {
   totalPages: 0,
 }
 
-export const credentialBusinessRouter = createTRPCRouter({
+export const credentialStoreRouter = createTRPCRouter({
   getAll: protectedProcedure.input(
     z.object({
       limit: z.number(),
@@ -43,9 +43,9 @@ export const credentialBusinessRouter = createTRPCRouter({
     const { limit, cursor, q } = input;
 
     // const session = await getServerSession();
-
-    const result = await axios.get<InfiniteQueryResult<IUserBusiness>>(
-      `${env.BACKEND_URL}/api/auth/business?page=${cursor ?? 0}&size=${limit}&q=${q}`,
+    // console.log({ accessToken: ctx.session.accessToken })
+    const result = await axios.get<InfiniteQueryResult<IUserBusinessDetail>>(
+      `${env.BACKEND_URL}/api/auth/store?page=${cursor ?? 0}&size=${limit}&q=${q}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;
@@ -57,16 +57,16 @@ export const credentialBusinessRouter = createTRPCRouter({
     return result;
   }),
 
-  setBusiness: protectedProcedure
+  setStore: protectedProcedure
     .input(z.object({
       id: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
       try {
         const result = await axios.post<ITokenData>(
-          `${env.BACKEND_URL}/api/auth/business`,
+          `${env.BACKEND_URL}/api/auth/store`,
           {
-            businessId: input.id,
+            warehouseId: input.id,
           },
           {
             headers: {

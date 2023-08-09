@@ -4,6 +4,7 @@ import type { ITransaction } from "../trans";
 
 export interface IFinanceDetail {
   id: string;
+  financeline_id: string;
   finance_id: string;
   trans_id: string;
   masterexchange_id: string;

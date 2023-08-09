@@ -4,6 +4,7 @@ import type { IMasterPartner } from "@/types/masters/masterPartner";
 
 export interface ICommissionCustomer {
   id: string;
+  komisicustomer_id: string;
   komisi_id: string;
   mastercustomer_id: string;
   mastercustomerkategori_id: string;

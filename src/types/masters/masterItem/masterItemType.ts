@@ -3,6 +3,7 @@ import type { IPlatform } from "@/types/cores/platform";
 
 export interface IMasterItemType {
   id: string;
+  masteritemtype_id: string;
   masterplatform_id: string;
   masterbussiness_id: string;
   masteritemtype_description: string;

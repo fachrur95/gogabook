@@ -3,6 +3,7 @@ import type { IPlatform } from "@/types/cores/platform";
 
 export interface IMasterAsset {
   id: string;
+  masterfixasset_id: string;
   masterfixassetcategory_id: string;
   masterpartner_id: string | null;
   masterpartnerjual_id: string | null;

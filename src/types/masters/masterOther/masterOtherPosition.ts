@@ -2,6 +2,7 @@ import type { IBusiness } from "@/types/cores/business";
 
 export interface IMasterOtherPosition {
   id: string;
+  masterotherjabatan_id: string;
   masterother_id: string;
   masterbussiness_id: string;
   masterotherjabatan_issales: boolean;
