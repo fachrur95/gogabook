@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { type DataMenuType } from "./data";
+import { findNestedObj } from "@/utils/helpers";
 
 interface ISidebarCollapse {
   openDrawer: boolean;
@@ -23,7 +24,7 @@ const SidebarCollapse = ({ openDrawer, item }: ISidebarCollapse) => {
   // const { data: sessionData } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
-  const { openMenu: open, setOpenMenu } = useAppStore();
+  const { menuRoles, openMenu: open, setOpenMenu } = useAppStore();
   const [domLoaded, setDomLoaded] = useState(false);
 
   useEffect(() => {
@@ -54,21 +55,23 @@ const SidebarCollapse = ({ openDrawer, item }: ISidebarCollapse) => {
       <Collapse in={open[item.url]} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {item.children.length > 0 &&
-            item.children.map((child, index) =>
-              child.children.length > 0 ? (
-                <NavCollapse
-                  key={`list-of-child-col-${index}`}
-                  openDrawer={openDrawer}
-                  item={child}
-                />
-              ) : (
-                <SidebarItem
-                  key={`list-of-child-item-${index}`}
-                  openDrawer={openDrawer}
-                  item={child}
-                />
-              )
-            )}
+            item.children
+              .filter((obj) => findNestedObj(menuRoles, obj.id)?.allow === true)
+              .map((child, index) =>
+                child.children.length > 0 ? (
+                  <NavCollapse
+                    key={`list-of-child-col-${index}`}
+                    openDrawer={openDrawer}
+                    item={child}
+                  />
+                ) : (
+                  <SidebarItem
+                    key={`list-of-child-item-${index}`}
+                    openDrawer={openDrawer}
+                    item={child}
+                  />
+                )
+              )}
         </List>
       </Collapse>
     </>

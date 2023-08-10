@@ -101,6 +101,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // console.log({ test: typeof credentials?.callbackUrl })
         if (!credentials?.email || !credentials.password) {
           return null;
         }
@@ -149,6 +150,9 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    signIn: "/auth"
+  }
 };
 
 /**

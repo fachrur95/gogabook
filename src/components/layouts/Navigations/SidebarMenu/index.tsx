@@ -3,10 +3,29 @@ import List from "@mui/material/List";
 import SidebarCollapse from "./SidebarCollapse";
 import SidebarItem from "./SidebarItem";
 import menuData from "./data";
+import { useAppStore } from "@/utils/store";
+import { findNestedObj } from "@/utils/helpers";
+import { useEffect, useState } from "react";
 
 const SidebarMenu = ({ openDrawer }: { openDrawer: boolean }) => {
   // const { data: sessionData } = useSession();
-  // const { setOpenMenu } = useAppStore();
+  const { menuRoles } = useAppStore();
+  const [domLoaded, setDomLoaded] = useState(false);
+
+  // const test = menuRoles.map((role) => role.children);
+  /* console.log({
+    menuRoles,
+    test: findNestedObj(menuRoles, "sales"),
+    valueFind: menuRoles[0]?.id ?? "",
+  }); */
+
+  useEffect(() => {
+    setDomLoaded(true);
+  }, []);
+
+  if (domLoaded === false) {
+    return null;
+  }
 
   return (
     <List
@@ -21,21 +40,23 @@ const SidebarMenu = ({ openDrawer }: { openDrawer: boolean }) => {
         )
       } */
     >
-      {menuData.map((item, index) =>
-        item.children.length > 0 ? (
-          <SidebarCollapse
-            key={`list-col-${index}`}
-            openDrawer={openDrawer}
-            item={item}
-          />
-        ) : (
-          <SidebarItem
-            key={`list-item-${index}`}
-            openDrawer={openDrawer}
-            item={item}
-          />
-        )
-      )}
+      {menuData
+        .filter((obj) => findNestedObj(menuRoles, obj.id)?.allow === true)
+        .map((item, index) =>
+          item.children.length > 0 ? (
+            <SidebarCollapse
+              key={`list-col-${index}`}
+              openDrawer={openDrawer}
+              item={item}
+            />
+          ) : (
+            <SidebarItem
+              key={`list-item-${index}`}
+              openDrawer={openDrawer}
+              item={item}
+            />
+          )
+        )}
     </List>
   );
 };

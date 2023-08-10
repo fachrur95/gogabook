@@ -1,7 +1,7 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { api } from "@/utils/api";
+// import { api } from "@/utils/api";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "@/server/auth";
@@ -11,7 +11,7 @@ import type { ISessionData } from "@/types/session";
 const DashboardPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
 }) => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   return (
     <>
@@ -50,9 +50,9 @@ const DashboardPage: MyPage<{ sessionData: ISessionData }> = ({
             </Link>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
+            {/* <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
+            </p> */}
             <AuthShowcase sessionData={sessionData} />
           </div>
         </div>
@@ -62,20 +62,20 @@ const DashboardPage: MyPage<{ sessionData: ISessionData }> = ({
 };
 
 function AuthShowcase({ sessionData }: { sessionData?: ISessionData }) {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   // console.log({ session });
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
+  /* const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
     { enabled: session?.user !== undefined }
-  );
+  ); */
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData?.fullName}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
+        {/* {secretMessage && <span> - {secretMessage}</span>} */}
       </p>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"

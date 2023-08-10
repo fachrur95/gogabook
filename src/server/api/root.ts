@@ -1,8 +1,10 @@
-import { exampleRouter } from "@/server/api/routers/example";
 import { createTRPCRouter } from "@/server/api/trpc";
 import { credentialBusinessRouter } from "./routers/credentials/business";
 import { credentialPrivilegeRouter } from "./routers/credentials/privilege";
 import { credentialStoreRouter } from "./routers/credentials/store";
+import { generalSettingRouter } from "./routers/settings/generalSetting";
+import { menuRoleRouter } from "./routers/credentials/menuRole";
+import { salesPurchaseRouter } from "./routers/transactions/sales-purchase";
 
 /**
  * This is the primary router for your server.
@@ -10,10 +12,12 @@ import { credentialStoreRouter } from "./routers/credentials/store";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
   credentialBusiness: credentialBusinessRouter,
   credentialPrivilege: credentialPrivilegeRouter,
   credentialStore: credentialStoreRouter,
+  generalSettings: generalSettingRouter,
+  menuRole: menuRoleRouter,
+  salesPurchase: salesPurchaseRouter,
 })
 
 // export type definition of API

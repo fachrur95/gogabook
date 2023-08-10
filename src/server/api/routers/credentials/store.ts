@@ -7,16 +7,8 @@ import { z } from "zod";
 import { env } from "@/env.mjs";
 import type { ITokenData } from "@/types/token";
 import type { IUserBusinessDetail } from "@/types/masters/userBusinessDetail";
+import type { InfiniteQueryResult } from "@/types/api-response";
 // import { getServerSession } from "next-auth";
-
-export interface InfiniteQueryResult<T> {
-  result: T[];
-  count: number;
-  countAll: number;
-  currentPage: number | null;
-  nextPage: boolean;
-  totalPages: number;
-}
 
 export const defaultUndefinedResult: InfiniteQueryResult<IUserBusinessDetail> = {
   result: [],

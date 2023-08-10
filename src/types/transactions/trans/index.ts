@@ -6,6 +6,7 @@ import type { IMasterOther } from "@/types/masters/masterOther";
 import type { IMasterPartner } from "@/types/masters/masterPartner";
 import type { IMasterWarehouse } from "@/types/masters/masterWarehouse";
 import type { ITransactionFakturDetail } from "../taxInvoice/taxInvoiceDetail";
+import { ITotalTrans } from "./totalTrans";
 
 export interface ITransaction {
   id: string;
@@ -80,6 +81,7 @@ export interface ITransaction {
   trans_asset?: IMasterAsset | null;
   trans_address?: IMasterAsset | null;
   data_faktur?: ITransactionFakturDetail | null;
+  trans_totalvalue?: ITotalTrans | null;
   description?: string | null;
   title?: string | null;
 }

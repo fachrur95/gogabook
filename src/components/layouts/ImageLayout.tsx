@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { type PropsWithChildren } from "react";
+import Toolbar from "@mui/material/Toolbar";
 
 const ImageLayout = (props: PropsWithChildren) => {
   return (
@@ -12,6 +13,7 @@ const ImageLayout = (props: PropsWithChildren) => {
         style={{ objectFit: "cover" }}
         className="-z-10"
       />
+      <Toolbar id="back-to-top-anchor" />
       {props.children}
     </div>
   );

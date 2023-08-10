@@ -1,3 +1,5 @@
+import { IRole } from "@/types/cores/roles";
+import { GridFilterItem } from "@mui/x-data-grid-pro";
 
 export const variantNameShown = (name: string): string => {
   // const splitted = name.split(",");
@@ -105,7 +107,7 @@ export const currentDate = (param = new Date()): string => {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 export const convertToArabicText = (conventionalNumber: string): string => {
-  const arabicNumbers: { [key: string]: string } = {
+  const arabicNumbers: Record<string, string> = {
     '0': '٠',
     '1': '١',
     '2': '٢',
@@ -125,3 +127,107 @@ export const convertToArabicText = (conventionalNumber: string): string => {
 
   return arabicText;
 }
+
+
+/* export const findNestedObj = ({
+  arrayObj,
+  valueFind,
+  keyFind = "masterrole_alias"
+}: { arrayObj: IRole[], valueFind: string, keyFind?: string }): IRole | undefined => {
+  let foundObj = undefined;
+  JSON.stringify(arrayObj, (_, nestedValue) => {
+    // console.log({ nestedValue })
+    if (nestedValue && nestedValue[keyFind] === valueFind) {
+      foundObj = nestedValue;
+    }
+    return nestedValue;
+  });
+  return foundObj;
+}; */
+
+export function findNestedObj(arr: IRole[], searchValue: string, searchKey: keyof IRole = "masterrole_alias"): IRole | undefined {
+  if (!arr) return undefined;
+  for (const obj of arr) {
+    for (const key in obj) {
+      if (key === searchKey && obj[key] === searchValue) {
+        return obj;
+      }
+      const valueOfKey = obj[key as keyof IRole];
+      const typeOfKey = typeof valueOfKey
+      if (typeOfKey === "object") {
+        const foundInNested = findNestedObj([valueOfKey] as unknown as IRole[], searchKey, searchValue as keyof IRole);
+        if (foundInNested) {
+          return foundInNested;
+        }
+      }
+    }
+  }
+  return undefined;
+}
+
+export const convertOperator = ({ items }: { items: GridFilterItem[] }) => {
+  // console.log({ data })
+  return items.map((el) => {
+    if (
+      el.operatorValue === "equals" ||
+      el.operatorValue === "=" ||
+      el.operatorValue === "is"
+    ) {
+      return { ...el, operatorValue: "eq" };
+    }
+    if (el.operatorValue === "contains") {
+      return { ...el, operatorValue: "substring" };
+    }
+    if (el.operatorValue === "isAnyOf") {
+      return { ...el, operatorValue: "in" };
+    }
+    if (el.operatorValue === "isNotEmpty") {
+      return { ...el, operatorValue: "ne", value: null };
+    }
+    if (el.operatorValue === "isEmpty") {
+      return { ...el, operatorValue: "is", value: null };
+    }
+    if (
+      el.operatorValue === "isNot" ||
+      el.operatorValue === "not" ||
+      el.operatorValue === "!="
+    ) {
+      return { ...el, operatorValue: "ne" };
+    }
+    if (
+      el.operatorValue === "isAfter" ||
+      el.operatorValue === "after" ||
+      el.operatorValue === ">"
+    ) {
+      return { ...el, operatorValue: "gt" };
+    }
+    if (
+      el.operatorValue === "isOnOrAfter" ||
+      el.operatorValue === "onOrAfter" ||
+      el.operatorValue === ">="
+    ) {
+      return { ...el, operatorValue: "gte" };
+    }
+    if (
+      el.operatorValue === "isBefore" ||
+      el.operatorValue === "before" ||
+      el.operatorValue === "<"
+    ) {
+      return { ...el, operatorValue: "lt" };
+    }
+    if (
+      el.operatorValue === "isOnOrBefore" ||
+      el.operatorValue === "onOrBefore" ||
+      el.operatorValue === "<="
+    ) {
+      return { ...el, operatorValue: "lte" };
+    }
+    return el;
+  });
+};
+
+export const convertDateOnly = (val: number) => {
+  return new Date(val).toLocaleString("id-ID", { dateStyle: "long" });
+
+  // return `${date.getMonth() + 1}/${date.getDay()}/${date.getFullYear()}`;
+};

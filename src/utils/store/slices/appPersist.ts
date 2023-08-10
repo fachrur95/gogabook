@@ -1,4 +1,6 @@
 import menuData from "@/components/layouts/Navigations/SidebarMenu/data";
+import { IGeneralSettings } from "@/types/cores/generalSettings";
+import { IRole } from "@/types/cores/roles";
 import { type StateCreator } from "zustand";
 
 type OpenMenuType = Record<string, boolean>
@@ -58,6 +60,10 @@ const initialStateForm = {
 
 // console.log({ initialStateMenu })
 export interface IAppPersistSlice {
+  generalSettings: IGeneralSettings | null,
+  menuRoles: IRole[],
+  setGeneralSettings: (data: IGeneralSettings) => void;
+  setMenuRoles: (data: IRole[]) => void;
   openMenu: OpenMenuType;
   density: "compact" | "standard" | "comfortable";
   setOpenMenu: (url: string) => void;
@@ -112,6 +118,10 @@ export interface IAppPersistSlice {
 }
 
 export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
+  generalSettings: null,
+  menuRoles: [],
+  setGeneralSettings: (data => set((state) => ({ ...state, generalSettings: data }))),
+  setMenuRoles: (data => set((state) => ({ ...state, menuRoles: data }))),
   density: "standard",
   openMenu: initialStateMenu,
   setOpenMenu: (url => set((state) => ({ ...state, openMenu: { ...state.openMenu, [url]: !state.openMenu[url] } }))),

@@ -5,13 +5,11 @@ import {
 import axios from "axios";
 import { z } from "zod";
 import { env } from "@/env.mjs";
-import type { IUserBusiness } from "@/types/masters/userBusiness";
-import type { ITokenData } from "@/types/token";
+import type { ITransaction } from "@/types/transactions/trans";
 import type { InfiniteQueryResult } from "@/types/api-response";
 // import { getServerSession } from "next-auth";
 
-
-export const defaultUndefinedResult: InfiniteQueryResult<IUserBusiness> = {
+export const defaultUndefinedResult: InfiniteQueryResult<ITransaction> = {
   result: [],
   count: 0,
   countAll: 0,
@@ -20,7 +18,7 @@ export const defaultUndefinedResult: InfiniteQueryResult<IUserBusiness> = {
   totalPages: 0,
 }
 
-export const credentialBusinessRouter = createTRPCRouter({
+export const salesPurchaseRouter = createTRPCRouter({
   getAll: protectedProcedure.input(
     z.object({
       limit: z.number(),
@@ -35,10 +33,8 @@ export const credentialBusinessRouter = createTRPCRouter({
   ).query(async ({ ctx, input }) => {
     const { limit, cursor, q } = input;
 
-    // const session = await getServerSession();
-
-    const result = await axios.get<InfiniteQueryResult<IUserBusiness>>(
-      `${env.BACKEND_URL}/api/auth/business?page=${cursor ?? 0}&size=${limit}&q=${q}`,
+    const result = await axios.get<InfiniteQueryResult<ITransaction>>(
+      `${env.BACKEND_URL}/api/core/trans/sales-invoice?page=${cursor ?? 0}&size=${limit}&q=${q}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;
@@ -49,37 +45,6 @@ export const credentialBusinessRouter = createTRPCRouter({
 
     return result;
   }),
-
-  setBusiness: protectedProcedure
-    .input(z.object({
-      id: z.string(),
-    }))
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const result = await axios.post<ITokenData>(
-          `${env.BACKEND_URL}/api/auth/business`,
-          {
-            businessId: input.id,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${ctx.session.accessToken}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          },
-        ).then((response) => {
-          return response.data;
-        }).catch((err) => {
-          console.log(err)
-          return null
-        });
-        return result;
-      } catch (error) {
-        console.log(error);
-        return null;
-      }
-    }),
 
   /* getUnique: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
     return ctx.prisma.business.findUnique({

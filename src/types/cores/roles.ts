@@ -14,5 +14,5 @@ export type RoleType = PermissionType & {
   allow: boolean;
 }
 export interface IRole extends RoleType {
-  children: RoleType[];
+  children: IRole[];
 }

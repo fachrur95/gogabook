@@ -1,7 +1,6 @@
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import React, { useEffect, useState } from "react";
 import { api } from "@/utils/api";
-import type { InfiniteQueryResult } from "@/server/api/routers/credentials/business";
 import Head from "next/head";
 import {
   Box,
@@ -31,6 +30,7 @@ import type { GetServerSideProps } from "next";
 import { getServerAuthSession } from "@/server/auth";
 import jwtDecode from "jwt-decode";
 import type { ISessionData } from "@/types/session";
+import type { InfiniteQueryResult } from "@/types/api-response";
 
 const CredentialStorePage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
@@ -55,7 +55,9 @@ const CredentialStorePage: MyPage<{ sessionData: ISessionData }> = ({
     { limit: 10, q: search },
     {
       getNextPageParam: (lastPage: InfiniteQueryResult<IUserBusinessDetail>) =>
-        lastPage.currentPage ? (lastPage.currentPage ?? 0) + 1 : undefined,
+        typeof lastPage.currentPage === "number" && rows.length < countAll
+          ? (lastPage.currentPage ?? 0) + 1
+          : undefined,
       staleTime: 0,
     }
   );

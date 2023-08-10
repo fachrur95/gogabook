@@ -143,18 +143,11 @@ const DashboardHeader = (props: HeaderProps) => {
           <div className="flex flex-row items-center gap-2">
             <Image
               alt="logo"
-              src="/icons/apple-touch-icon.png"
-              width={40}
-              height={40}
+              src="/img/logo-inline-white.png"
+              loading="lazy"
+              width={163}
+              height={49}
             />
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ display: { xs: "none", sm: "block" } }}
-            >
-              PTNQ Kudus
-            </Typography>
           </div>
           {/* <SearchInput /> */}
           <Box sx={{ flexGrow: 1 }} />
@@ -179,7 +172,7 @@ const DashboardHeader = (props: HeaderProps) => {
             </IconButton> */}
             <div className="flex flex-row items-center gap-2">
               <div className="flex flex-col items-end justify-center">
-                <Typography variant="subtitle2">
+                <Typography variant="subtitle2" className="capitalize">
                   {session?.user.name ?? "-"}
                 </Typography>
                 <Typography variant="body2">
