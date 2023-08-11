@@ -115,19 +115,22 @@ export interface IAppPersistSlice {
   },
   setFormOpen: ({ form, id }: { form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory", id?: string }) => void,
   setFormClose: (form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory") => void,
-  deleting: { status: boolean, processing: number, processed: number };
+  deleting: { status: boolean, ids: string[], processing: number, processed: number };
   setDeleting: (status: boolean) => void;
   setDeleteCountAllProcess: (value: number) => void;
-  setDeleteProcessed: (value: number) => void;
+  setDeletingId: (ids: string[]) => void;
+  setDeleteProcessed: () => void;
+  resetDeleting: () => void;
 }
 
 const defaultDeleting = {
   status: false,
+  ids: [],
   processing: 0,
   processed: 0,
 }
 
-export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
+export const appPersistSlice: StateCreator<IAppPersistSlice> = (set, get) => ({
   generalSettings: null,
   menuRoles: [],
   setGeneralSettings: (data => set((state) => ({ ...state, generalSettings: data }))),
@@ -140,6 +143,8 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
   setFormClose: ((form) => set(state => ({ ...state, form: ({ ...state.form, [form]: { open: false, id: undefined } }) }))),
   deleting: defaultDeleting,
   setDeleting: (status => set((state) => ({ ...state, deleting: { ...state.deleting, status } }))),
+  setDeletingId: (ids => set((state) => ({ ...state, deleting: { ...state.deleting, ids } }))),
   setDeleteCountAllProcess: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processing: value } }))),
-  setDeleteProcessed: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processed: value } }))),
+  setDeleteProcessed: (() => set((state) => ({ ...state, deleting: { ...state.deleting, processed: get().deleting.processed + 1 } }))),
+  resetDeleting: (() => set((state) => ({ ...state, deleting: defaultDeleting })))
 })

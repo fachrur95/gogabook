@@ -73,9 +73,9 @@ export const salesPurchaseRouter = createTRPCRouter({
           { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
         ).then((response) => {
           return response.data;
-        }).catch((err) => {
-          console.log(err)
-          return { message: `Error Delete id=${input.id}` }
+        }).catch((err: { response: { data: { message: string } } }) => {
+          // console.log(err)
+          return { message: err.response.data.message ?? `Error Delete id=${input.id}` }
         });
         return result;
       } catch (error) {

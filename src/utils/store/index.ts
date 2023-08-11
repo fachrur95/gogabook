@@ -13,6 +13,7 @@ export const useAppStore = create<StoreState>()(persist((...params) => ({
 }), {
   name: "gogabook-app",
   partialize: (state) => ({
+    sidebarOpen: state.sidebarOpen,
     openMenu: state.openMenu,
     menuRoles: state.menuRoles,
     generalSettings: state.generalSettings,

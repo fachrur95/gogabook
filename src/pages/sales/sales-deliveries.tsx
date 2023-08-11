@@ -43,9 +43,9 @@ import { useEffect, useState } from "react";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
-const title = "Sales Invoice";
+const title = "Sales Delivery";
 
-const SalesInvoicesPage: MyPage = () => {
+const SalesDeliveriesPage: MyPage = () => {
   const [rows, setRows] = useState<ITransaction[]>([]);
   const [countAll, setCountAll] = useState<number>(0);
   const [sortModel, setSortModel] = useState<GridSortModel | undefined>(
@@ -72,7 +72,7 @@ const SalesInvoicesPage: MyPage = () => {
     isFetching,
   } = api.salesPurchase.getAll.useInfiniteQuery(
     {
-      type: "sales-invoice",
+      type: "sales-delivery",
       limit: 150,
       q: search,
       filter: JSON.stringify(dataFilter),
@@ -346,5 +346,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default SalesInvoicesPage;
-SalesInvoicesPage.Layout = "Dashboard";
+export default SalesDeliveriesPage;
+SalesDeliveriesPage.Layout = "Dashboard";

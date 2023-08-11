@@ -44,9 +44,10 @@ const DeletingProcess = () => {
       const outstanding = deleting.processed;
 
       const countProgress = (outstanding / all) * 100;
-      if (isNaN(countProgress) === false) {
-        setProgress(countProgress);
+      if (isNaN(countProgress)) {
+        return setProgress(0);
       }
+      setProgress(countProgress);
     }
   }, [deleting]);
 
