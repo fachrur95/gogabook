@@ -87,8 +87,8 @@ const SalesInvoicesPage: MyPage = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "masteritem_description",
-      headerName: "Item",
+      field: "trans_text",
+      headerName: "No. Transaction",
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>

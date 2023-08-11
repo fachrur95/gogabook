@@ -12,8 +12,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import CoreHeader from "./CoreHeader";
-import SessionComponent from "@/components/displays/SessionComponent";
-import { useAppStore } from "@/utils/store";
+import useSessionData from "@/components/displays/SessionData";
 
 interface HeaderProps {
   window?: () => Window;
@@ -22,7 +21,7 @@ interface HeaderProps {
 
 const DashboardHeader = (props: HeaderProps) => {
   const { data: session } = useSession();
-  const { session: sessionData } = useAppStore();
+  const { data: sessionData } = useSessionData({ token: session?.accessToken });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -212,7 +211,6 @@ const DashboardHeader = (props: HeaderProps) => {
       </CoreHeader>
       {renderMobileMenu}
       {renderMenu}
-      <SessionComponent token={session?.accessToken} />
     </Box>
   );
 };
