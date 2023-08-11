@@ -9,15 +9,16 @@ import {
   type ReactNode,
 } from "react";
 
-type globalContextType = {
+type GlobalContextType = {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   theme: "system" | "light" | "dark" | string | undefined;
 };
 
-const globalContextDefaultValues: globalContextType = {
+const globalContextDefaultValues: GlobalContextType = {
   theme: "system",
 };
 
-const GlobalContext = createContext<globalContextType>(
+const GlobalContext = createContext<GlobalContextType>(
   globalContextDefaultValues
 );
 
@@ -31,6 +32,7 @@ type Props = {
 
 export function GlobalContextProvider({ children }: Props) {
   const [currentTheme, setCurrentTheme] = useState<
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     "system" | "light" | "dark" | string | undefined
   >("system");
   const { theme, systemTheme } = useTheme();

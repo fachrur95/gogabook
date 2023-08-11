@@ -16,9 +16,9 @@ const BackHeader = (props: BackHeaderProps) => {
   const pathname = path?.split("/");
 
   const lastPath: string =
-    pathname?.[pathname.length - 1]?.split("-")?.join(" ") || "";
+    pathname?.[pathname.length - 1]?.split("-")?.join(" ") ?? "";
   const beforeLastPath: string =
-    pathname?.[pathname.length - 2]?.split("-")?.join(" ") || "";
+    pathname?.[pathname.length - 2]?.split("-")?.join(" ") ?? "";
 
   const handleClose = (): void => void router.back();
 

@@ -41,13 +41,13 @@ const CredentialBusinessPage: MyPage = () => {
   const { setOpenNotification } = useNotification();
 
   const {
-    isError,
+    // isError,
     data,
-    error,
+    // error,
     fetchNextPage,
     hasNextPage,
-    refetch,
-    isLoading,
+    // refetch,
+    // isLoading,
   } = api.credentialBusiness.getAll.useInfiniteQuery(
     { limit: 10, q: search },
     {

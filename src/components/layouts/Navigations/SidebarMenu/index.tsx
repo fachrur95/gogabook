@@ -1,23 +1,14 @@
 import List from "@mui/material/List";
-// import { useSession } from "next-auth/react";
 import SidebarCollapse from "./SidebarCollapse";
 import SidebarItem from "./SidebarItem";
 import menuData from "./data";
-import { useAppStore } from "@/utils/store";
 import { findNestedObj } from "@/utils/helpers";
 import { useEffect, useState } from "react";
+import useMenuRole from "@/components/displays/useMenuRole";
 
 const SidebarMenu = ({ openDrawer }: { openDrawer: boolean }) => {
-  // const { data: sessionData } = useSession();
-  const { menuRoles } = useAppStore();
+  const { data: menuRoles } = useMenuRole();
   const [domLoaded, setDomLoaded] = useState(false);
-
-  // const test = menuRoles.map((role) => role.children);
-  /* console.log({
-    menuRoles,
-    test: findNestedObj(menuRoles, "sales"),
-    valueFind: menuRoles[0]?.id ?? "",
-  }); */
 
   useEffect(() => {
     setDomLoaded(true);
@@ -26,6 +17,8 @@ const SidebarMenu = ({ openDrawer }: { openDrawer: boolean }) => {
   if (domLoaded === false) {
     return null;
   }
+
+  console.log({ menuRoles });
 
   return (
     <List

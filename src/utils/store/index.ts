@@ -15,5 +15,7 @@ export const useAppStore = create<StoreState>()(persist((...params) => ({
   partialize: (state) => ({
     openMenu: state.openMenu,
     menuRoles: state.menuRoles,
+    generalSettings: state.generalSettings,
+    deleting: state.deleting,
   })
 }))

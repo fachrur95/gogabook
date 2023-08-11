@@ -6,7 +6,7 @@ import type { IMasterOther } from "@/types/masters/masterOther";
 import type { IMasterPartner } from "@/types/masters/masterPartner";
 import type { IMasterWarehouse } from "@/types/masters/masterWarehouse";
 import type { ITransactionFakturDetail } from "../taxInvoice/taxInvoiceDetail";
-import { ITotalTrans } from "./totalTrans";
+import type { ITotalTrans } from "./totalTrans";
 
 export interface ITransaction {
   id: string;

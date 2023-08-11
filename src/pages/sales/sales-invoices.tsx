@@ -1,15 +1,21 @@
-import useNotification from "@/components/displays/Notification";
+import DeleteMultiple from "@/components/displays/DeleteMultiple";
 import type { MyPage } from "@/components/layouts/layoutTypes";
+import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
 import { getServerAuthSession } from "@/server/auth";
+import type { InfiniteQueryResult } from "@/types/api-response";
 import type { ISessionData } from "@/types/session";
 import type { ITransaction } from "@/types/transactions/trans";
-import { useAppStore } from "@/utils/store";
-import jwtDecode from "jwt-decode";
-import { type GetServerSideProps } from "next";
-import React, { useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
 import { api } from "@/utils/api";
-import type { InfiniteQueryResult } from "@/types/api-response";
+import {
+  convertDateOnly,
+  convertOperator,
+  formatNumber,
+} from "@/utils/helpers";
+import { useAppStore } from "@/utils/store";
+import Close from "@mui/icons-material/Close";
+import Done from "@mui/icons-material/Done";
+import HourglassBottom from "@mui/icons-material/HourglassBottom";
+import Refresh from "@mui/icons-material/Refresh";
 import {
   Box,
   Chip,
@@ -19,35 +25,27 @@ import {
   Typography,
 } from "@mui/material";
 import type {
-  GridSortModel,
   GridColDef,
   GridFilterModel,
   GridInputSelectionModel,
-  GridSelectionModel,
-  DataGridProProps,
   GridRenderCellParams,
+  GridSelectionModel,
+  GridSortModel,
   GridValueGetterParams,
 } from "@mui/x-data-grid-pro";
-import Link from "next/link";
-import Done from "@mui/icons-material/Done";
-import Close from "@mui/icons-material/Close";
-import Refresh from "@mui/icons-material/Refresh";
-import HourglassBottom from "@mui/icons-material/HourglassBottom";
-import {
-  convertDateOnly,
-  convertOperator,
-  formatNumber,
-} from "@/utils/helpers";
+import jwtDecode from "jwt-decode";
+import { type GetServerSideProps } from "next";
 import Head from "next/head";
-import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
-import { LoadingPage } from "@/components/layouts/LoadingPage";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+// import { LoadingPage } from "@/components/layouts/LoadingPage";
+// import useNotification from "@/components/displays/Notification";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
 const title = "Sales Invoice";
 
 const SalesInvoicesPage: MyPage = () => {
-  const { ref, inView } = useInView();
   const [rows, setRows] = useState<ITransaction[]>([]);
   const [countAll, setCountAll] = useState<number>(0);
   const [sortModel, setSortModel] = useState<GridSortModel | undefined>(
@@ -62,7 +60,7 @@ const SalesInvoicesPage: MyPage = () => {
   const [dataFilter, setDataFilter] = useState({ sortModel, filterModel });
 
   const { search } = useAppStore();
-  const { setOpenNotification } = useNotification();
+  // const { setOpenNotification } = useNotification();
 
   const {
     isError,
@@ -71,17 +69,19 @@ const SalesInvoicesPage: MyPage = () => {
     fetchNextPage,
     hasNextPage,
     refetch,
-    // isLoading,
-    // isInitialLoading,
     isFetching,
   } = api.salesPurchase.getAll.useInfiniteQuery(
-    { limit: 15, q: search },
+    {
+      type: "sales-invoice",
+      limit: 15,
+      q: search,
+      filter: JSON.stringify(dataFilter),
+    },
     {
       getNextPageParam: (lastPage: InfiniteQueryResult<ITransaction>) =>
         typeof lastPage.currentPage === "number" && rows.length < countAll
           ? (lastPage.currentPage ?? 0) + 1
           : undefined,
-      staleTime: 0,
     }
   );
 
@@ -231,8 +231,19 @@ const SalesInvoicesPage: MyPage = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    setDataFilter({
+      sortModel,
+      filterModel,
+    });
+  }, [sortModel, filterModel]);
+
+  if (isError) return <div>Error! {JSON.stringify(error)}</div>;
+
   // console.log({ hasNextPage });
   // if (isInitialLoading) return <LoadingPage />;
+
+  console.log({ selectionModel });
 
   return (
     <>
@@ -250,12 +261,18 @@ const SalesInvoicesPage: MyPage = () => {
             <Typography variant="h5" gutterBottom>
               {title}
             </Typography>
-            <IconButton onClick={() => refetch()}>
-              <Refresh />
-            </IconButton>
+            <div>
+              <DeleteMultiple
+                ids={selectionModel as string[]}
+                handleRefresh={() => void refetch()}
+              />
+              <IconButton onClick={() => void refetch()}>
+                <Refresh />
+              </IconButton>
+            </div>
           </Box>
           <DataGridProAdv
-            height="74vh"
+            height="80vh"
             loading={isFetching}
             columns={columns}
             rows={rows}

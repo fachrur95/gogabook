@@ -21,9 +21,22 @@ export const defaultUndefinedResult: InfiniteQueryResult<ITransaction> = {
 export const salesPurchaseRouter = createTRPCRouter({
   getAll: protectedProcedure.input(
     z.object({
+      type: z.enum([
+        "purchase-quotation",
+        "purchase-order",
+        "purchase-delivery",
+        "purchase-invoice",
+        "purchase-return",
+        "sales-quotation",
+        "sales-order",
+        "sales-delivery",
+        "sales-invoice",
+        "sales-return",
+      ]),
       limit: z.number(),
       cursor: z.union([z.string(), z.number()]).nullish(),
       q: z.string().nullish(),
+      filter: z.string().nullish(),
       sorting: z.object({
         column: z.string().optional(),
         direction: z.enum(["asc", "desc"]).optional(),
@@ -31,10 +44,10 @@ export const salesPurchaseRouter = createTRPCRouter({
       show: z.enum(["all", "active", "inactive"]).default("all"),
     }),
   ).query(async ({ ctx, input }) => {
-    const { limit, cursor, q } = input;
+    const { type, limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<ITransaction>>(
-      `${env.BACKEND_URL}/api/core/trans/sales-invoice?page=${cursor ?? 0}&size=${limit}&q=${q}`,
+      `${env.BACKEND_URL}/api/core/trans/${type}?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;
@@ -45,6 +58,31 @@ export const salesPurchaseRouter = createTRPCRouter({
 
     return result;
   }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        // ids: z.union([z.string(), z.string().array()]),
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const result = await axios.delete<{ message: string }>(
+          `${env.BACKEND_URL}/api/core/procedure/trans/${input.id}`,
+          { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
+        ).then((response) => {
+          return response.data;
+        }).catch((err) => {
+          console.log(err)
+          return { message: `Error Delete id=${input.id}` }
+        });
+        return result;
+      } catch (error) {
+        console.log({ error, msg: "test" });
+        return { message: `Error Delete id=${input.id}` };
+      }
+    }),
 
   /* getUnique: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
     return ctx.prisma.business.findUnique({
@@ -71,28 +109,6 @@ export const salesPurchaseRouter = createTRPCRouter({
             isActive: input.isActive,
             createdBy: ctx.session.user.email as string,
           },
-        });
-      } catch (error) {
-        console.log({ error, msg: "test" })
-      }
-    }),
-
-  delete: protectedProcedure
-    .input(
-      z.object({
-        ids: z.union([z.string(), z.string().array()]),
-      }),
-    )
-    .mutation(({ ctx, input }) => {
-      try {
-        return ctx.prisma.business.deleteMany({
-          where: {
-            ...(typeof input.ids === "string" ? { id: input.ids } : {
-              id: {
-                in: input.ids
-              }
-            }),
-          }
         });
       } catch (error) {
         console.log({ error, msg: "test" })

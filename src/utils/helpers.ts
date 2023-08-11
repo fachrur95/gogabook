@@ -1,5 +1,5 @@
-import { IRole } from "@/types/cores/roles";
-import { GridFilterItem } from "@mui/x-data-grid-pro";
+import type { IRole } from "@/types/cores/roles";
+import type { GridFilterItem } from "@mui/x-data-grid-pro";
 
 export const variantNameShown = (name: string): string => {
   // const splitted = name.split(",");
@@ -145,7 +145,7 @@ export const convertToArabicText = (conventionalNumber: string): string => {
   return foundObj;
 }; */
 
-export function findNestedObj(arr: IRole[], searchValue: string, searchKey: keyof IRole = "masterrole_alias"): IRole | undefined {
+export function findNestedObj(arr: IRole[] | null, searchValue: string, searchKey: keyof IRole = "masterrole_alias"): IRole | undefined {
   if (!arr) return undefined;
   for (const obj of arr) {
     for (const key in obj) {

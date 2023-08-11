@@ -44,13 +44,13 @@ const CredentialStorePage: MyPage<{ sessionData: ISessionData }> = ({
   const { setOpenNotification } = useNotification();
 
   const {
-    isError,
+    // isError,
     data,
-    error,
+    // error,
     fetchNextPage,
     hasNextPage,
-    refetch,
-    isLoading,
+    // refetch,
+    // isLoading,
   } = api.credentialStore.getAll.useInfiniteQuery(
     { limit: 10, q: search },
     {

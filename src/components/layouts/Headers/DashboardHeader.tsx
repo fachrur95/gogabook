@@ -12,7 +12,8 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import CoreHeader from "./CoreHeader";
-import useSessionData from "@/components/displays/SessionData";
+import useSessionData from "@/components/displays/useSessionData";
+import DeletingProcess from "./DeletingProcess";
 
 interface HeaderProps {
   window?: () => Window;
@@ -150,7 +151,10 @@ const DashboardHeader = (props: HeaderProps) => {
           </div>
           {/* <SearchInput /> */}
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{ display: { xs: "none", md: "flex" } }}
+            className="items-center"
+          >
             {/* <IconButton
               size="large"
               aria-label="show 4 new mails"
@@ -169,6 +173,7 @@ const DashboardHeader = (props: HeaderProps) => {
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
+            <DeletingProcess />
             <div className="flex flex-row items-center gap-2">
               <div className="flex flex-col items-end justify-center">
                 <Typography variant="subtitle2" className="capitalize">

@@ -152,6 +152,10 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/auth"
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 10 * 60 * 60, // 10 hours
   }
 };
 

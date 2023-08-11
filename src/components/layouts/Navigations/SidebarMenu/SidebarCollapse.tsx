@@ -8,12 +8,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-// import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { type DataMenuType } from "./data";
 import { findNestedObj } from "@/utils/helpers";
+import useMenuRole from "@/components/displays/useMenuRole";
 
 interface ISidebarCollapse {
   openDrawer: boolean;
@@ -21,10 +21,10 @@ interface ISidebarCollapse {
 }
 
 const SidebarCollapse = ({ openDrawer, item }: ISidebarCollapse) => {
-  // const { data: sessionData } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
-  const { menuRoles, openMenu: open, setOpenMenu } = useAppStore();
+  const { openMenu: open, setOpenMenu } = useAppStore();
+  const { data: menuRoles } = useMenuRole();
   const [domLoaded, setDomLoaded] = useState(false);
 
   useEffect(() => {
@@ -33,8 +33,7 @@ const SidebarCollapse = ({ openDrawer, item }: ISidebarCollapse) => {
 
   useEffect(() => {
     if (item.url !== "/" && pathName.includes(item.url)) {
-      // console.log({ url: item.url });
-      setOpenMenu(item.url);
+      setOpenMenu(item.url, true);
     }
   }, [setOpenMenu, pathName, item]);
 

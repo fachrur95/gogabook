@@ -1,6 +1,6 @@
 import menuData from "@/components/layouts/Navigations/SidebarMenu/data";
-import { IGeneralSettings } from "@/types/cores/generalSettings";
-import { IRole } from "@/types/cores/roles";
+import type { IGeneralSettings } from "@/types/cores/generalSettings";
+import type { IRole } from "@/types/cores/roles";
 import { type StateCreator } from "zustand";
 
 type OpenMenuType = Record<string, boolean>
@@ -66,7 +66,7 @@ export interface IAppPersistSlice {
   setMenuRoles: (data: IRole[]) => void;
   openMenu: OpenMenuType;
   density: "compact" | "standard" | "comfortable";
-  setOpenMenu: (url: string) => void;
+  setOpenMenu: (url: string, check?: boolean) => void;
   form: {
     branch: {
       open: boolean;
@@ -113,8 +113,18 @@ export interface IAppPersistSlice {
       id?: string;
     },
   },
-  setFormOpen: ({ form, id }: { form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory", id?: string }) => void
-  setFormClose: (form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory") => void
+  setFormOpen: ({ form, id }: { form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory", id?: string }) => void,
+  setFormClose: (form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory") => void,
+  deleting: { status: boolean, processing: number, processed: number };
+  setDeleting: (status: boolean) => void;
+  setDeleteCountAllProcess: (value: number) => void;
+  setDeleteProcessed: (value: number) => void;
+}
+
+const defaultDeleting = {
+  status: false,
+  processing: 0,
+  processed: 0,
 }
 
 export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
@@ -124,8 +134,12 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
   setMenuRoles: (data => set((state) => ({ ...state, menuRoles: data }))),
   density: "standard",
   openMenu: initialStateMenu,
-  setOpenMenu: (url => set((state) => ({ ...state, openMenu: { ...state.openMenu, [url]: !state.openMenu[url] } }))),
+  setOpenMenu: ((url, check) => set((state) => ({ ...state, openMenu: { ...state.openMenu, [url]: check === true ? (state.openMenu[url] ? true : !state.openMenu[url]) : !state.openMenu[url] } }))),
   form: initialStateForm,
   setFormOpen: (({ form, id }) => set(state => ({ ...state, form: { ...state.form, [form]: { open: true, id } } }))),
   setFormClose: ((form) => set(state => ({ ...state, form: ({ ...state.form, [form]: { open: false, id: undefined } }) }))),
+  deleting: defaultDeleting,
+  setDeleting: (status => set((state) => ({ ...state, deleting: { ...state.deleting, status } }))),
+  setDeleteCountAllProcess: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processing: value } }))),
+  setDeleteProcessed: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processed: value } }))),
 })
