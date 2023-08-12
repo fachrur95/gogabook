@@ -29,13 +29,12 @@ const DeleteMultiple = ({
 
   const handleDelete = async () => {
     if (deleting.status) return;
-    setDeletingId(ids);
     setOpen(false);
-    setDeleteCountAllProcess(ids.length);
-    setDeleting(true);
 
     try {
-      // const allIds = deleting.ids;
+      setDeleting(true);
+      setDeletingId(ids);
+      setDeleteCountAllProcess(ids.length);
       for (const id of ids) {
         await mutation.mutateAsync(
           { id },

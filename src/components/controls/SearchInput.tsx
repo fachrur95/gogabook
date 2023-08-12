@@ -2,6 +2,8 @@ import { useAppStore } from "@/utils/store";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
+import debounce from "lodash.debounce";
+// import debounce from "lodash/debounce"; // 3.4k (gzipped
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -44,8 +46,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const SearchInput = () => {
-  // const inputRef = useRef<HTMLInputElement>();
-  const { search, setSearch } = useAppStore();
+  const { setSearch } = useAppStore();
+
+  const debouncedSearch = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(event.target.value);
+    },
+    1000
+  ); // Menunda eksekusi selama 1000ms
 
   return (
     <Search>
@@ -53,13 +61,11 @@ const SearchInput = () => {
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
-        value={search ?? ""}
-        onChange={(e) => setSearch(e.target.value)}
-        // onKeyUp={(e) => setSearch((e.target as HTMLInputElement).value)}
+        // value={searchText ?? ""}
+        onChange={debouncedSearch}
         placeholder="Search…"
         inputProps={{
           "aria-label": "search",
-          // onKeyUp: (e) => setSearch(e.currentTarget.value),
         }}
       />
     </Search>

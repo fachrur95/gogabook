@@ -5,6 +5,7 @@ import CircularProgress, {
 } from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import useNotification from "@/components/displays/Notification";
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -35,8 +36,9 @@ function CircularProgressWithLabel(
 }
 
 const DeletingProcess = () => {
-  const { deleting } = useAppStore();
+  const { deleting, notificationMessage } = useAppStore();
   const [progress, setProgress] = useState<number>(0);
+  const { setOpenNotification } = useNotification();
 
   useEffect(() => {
     if (deleting) {
@@ -50,6 +52,12 @@ const DeletingProcess = () => {
       setProgress(countProgress);
     }
   }, [deleting]);
+
+  useEffect(() => {
+    if (notificationMessage) {
+      setOpenNotification(notificationMessage);
+    }
+  }, [notificationMessage, setOpenNotification]);
 
   if (progress === 0) return null;
 

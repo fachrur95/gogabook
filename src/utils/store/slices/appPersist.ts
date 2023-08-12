@@ -67,6 +67,8 @@ export interface IAppPersistSlice {
   openMenu: OpenMenuType;
   density: "compact" | "standard" | "comfortable";
   setOpenMenu: (url: string, check?: boolean) => void;
+  notificationMessage: string | null;
+  setNotificationMessage: (message: string) => void;
   form: {
     branch: {
       open: boolean;
@@ -141,6 +143,8 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set, get) => ({
   form: initialStateForm,
   setFormOpen: (({ form, id }) => set(state => ({ ...state, form: { ...state.form, [form]: { open: true, id } } }))),
   setFormClose: ((form) => set(state => ({ ...state, form: ({ ...state.form, [form]: { open: false, id: undefined } }) }))),
+  notificationMessage: null,
+  setNotificationMessage: ((message) => set(state => ({ ...state, message: message }))),
   deleting: defaultDeleting,
   setDeleting: (status => set((state) => ({ ...state, deleting: { ...state.deleting, status } }))),
   setDeletingId: (ids => set((state) => ({ ...state, deleting: { ...state.deleting, ids } }))),
