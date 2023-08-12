@@ -1,4 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
+import useMenuRole from "@/components/displays/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
 import { getServerAuthSession } from "@/server/auth";
@@ -9,12 +10,16 @@ import { api } from "@/utils/api";
 import {
   convertDateOnly,
   convertOperator,
+  convertRole,
+  findNestedObj,
   formatNumber,
 } from "@/utils/helpers";
 import { useAppStore } from "@/utils/store";
 import Close from "@mui/icons-material/Close";
-import Done from "@mui/icons-material/Done";
-import HourglassBottom from "@mui/icons-material/HourglassBottom";
+import HourglassEmpty from "@mui/icons-material/HourglassEmpty";
+import HourglassFull from "@mui/icons-material/HourglassFull";
+import HourglassTop from "@mui/icons-material/HourglassTop";
+import Layers from "@mui/icons-material/Layers";
 import Refresh from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -44,9 +49,22 @@ import { useEffect, useState } from "react";
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
 const title = "Sales Quotation";
+const path = "sales-quotation";
 
-const SalesQuotationsPage: MyPage = () => {
+const tempPolicy: Record<string, boolean> = {
+  list: false,
+  view: false,
+  insert: false,
+  update: false,
+  delete: false,
+};
+
+const SalesQuotationsPage: MyPage<{ sessionData: ISessionData }> = ({
+  sessionData,
+}) => {
+  const { data: menuRoles } = useMenuRole();
   const [rows, setRows] = useState<ITransaction[]>([]);
+  const [policies, setPolicies] = useState<Record<string, boolean>>(tempPolicy);
   const [countAll, setCountAll] = useState<number>(0);
   const [sortModel, setSortModel] = useState<GridSortModel | undefined>(
     sortDefault
@@ -72,7 +90,7 @@ const SalesQuotationsPage: MyPage = () => {
     isFetching,
   } = api.salesPurchase.getAll.useInfiniteQuery(
     {
-      type: "sales-quotation",
+      type: path,
       limit: 150,
       q: search,
       filter: JSON.stringify(dataFilter),
@@ -92,26 +110,21 @@ const SalesQuotationsPage: MyPage = () => {
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>
-      ) => (
-        <Link
-          href={{
-            pathname: "/form/[[...slug]]",
-            query: { slug: [params.row.id, "view"] },
-          }}
-        >
-          <MuiLink key={params.row.id} component="button">
-            {params.row.trans_text}
-          </MuiLink>
-        </Link>
-      ),
-    },
-    {
-      field: "trans_order",
-      headerName: "Order",
-      type: "string",
-      flex: 1,
-      valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
-        return params.row.trans_parent?.trans_text ?? "-";
+      ) => {
+        const display = params.row.trans_text;
+        if (sessionData.isSuperAdmin === false && policies.view !== true) {
+          return display;
+        }
+        return (
+          <Link
+            href={{
+              pathname: "/form/[[...slug]]",
+              query: { slug: [params.row.id, "view"] },
+            }}
+          >
+            <MuiLink component="button">{display}</MuiLink>
+          </Link>
+        );
       },
     },
     {
@@ -146,35 +159,50 @@ const SalesQuotationsPage: MyPage = () => {
       },
     },
     {
-      field: "trans_bayar",
+      field: "trans_status",
       headerName: "Status",
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>
-      ) => {
-        const text = params.row.trans_totalvalue?.statusbayar;
-        return (
-          <Chip
-            icon={
-              text === "Lunas" ? (
-                <Done />
-              ) : text === "Belum Dibayar" ? (
-                <Close />
-              ) : (
-                <HourglassBottom />
-              )
-            }
-            label={text}
-            color={
-              text === "Lunas"
-                ? "success"
-                : text === "Belum Dibayar"
-                ? "error"
-                : "info"
-            }
-          />
-        );
-      },
+      ) => (
+        <Chip
+          icon={
+            params.row.trans_status === "P" ? (
+              <HourglassEmpty />
+            ) : params.row.trans_status === "H" ? (
+              <HourglassTop />
+            ) : params.row.trans_status === "CT" ? (
+              <Close />
+            ) : params.row.trans_status === "OD" ? (
+              <Layers />
+            ) : (
+              <HourglassFull />
+            )
+          }
+          label={
+            params.row.trans_status === "P"
+              ? "Done"
+              : params.row.trans_status === "H"
+              ? "Sebagian"
+              : params.row.trans_status === "CT"
+              ? "Close"
+              : params.row.trans_status === "OD"
+              ? "Melebihi"
+              : "Open"
+          }
+          color={
+            params.row.trans_status === "P"
+              ? "success"
+              : params.row.trans_status === "H"
+              ? "secondary"
+              : params.row.trans_status === "CT"
+              ? "error"
+              : params.row.trans_status === "OD"
+              ? "warning"
+              : "primary"
+          }
+        />
+      ),
     },
     {
       field: "trans_oleh",
@@ -212,11 +240,23 @@ const SalesQuotationsPage: MyPage = () => {
     }
   };
 
-  /* useEffect(() => {
-    if (inView && hasNextPage) {
-      void fetchNextPage();
+  useEffect(() => {
+    if (menuRoles.length > 0) {
+      const isSuperAdmin = sessionData.isSuperAdmin;
+      if (isSuperAdmin) {
+        return;
+      }
+      const selfPath = findNestedObj(menuRoles, path);
+      if (!selfPath) {
+        // return to core path;
+        return;
+      }
+      const child = selfPath.children;
+      const dataPolicies = convertRole(child);
+      if (!dataPolicies) return;
+      setPolicies(dataPolicies);
     }
-  }, [inView, hasNextPage, fetchNextPage]); */
+  }, [menuRoles, sessionData]);
 
   useEffect(() => {
     if (data) {

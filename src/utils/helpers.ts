@@ -128,23 +128,6 @@ export const convertToArabicText = (conventionalNumber: string): string => {
   return arabicText;
 }
 
-
-/* export const findNestedObj = ({
-  arrayObj,
-  valueFind,
-  keyFind = "masterrole_alias"
-}: { arrayObj: IRole[], valueFind: string, keyFind?: string }): IRole | undefined => {
-  let foundObj = undefined;
-  JSON.stringify(arrayObj, (_, nestedValue) => {
-    // console.log({ nestedValue })
-    if (nestedValue && nestedValue[keyFind] === valueFind) {
-      foundObj = nestedValue;
-    }
-    return nestedValue;
-  });
-  return foundObj;
-}; */
-
 export function findNestedObj(arr: IRole[] | null, searchValue: string, searchKey: keyof IRole = "masterrole_alias"): IRole | undefined {
   if (!arr) return undefined;
   for (const obj of arr) {
@@ -164,6 +147,17 @@ export function findNestedObj(arr: IRole[] | null, searchValue: string, searchKe
   }
   return undefined;
 }
+
+export const convertRole = (array?: IRole[]) => {
+  if (!Array.isArray(array)) return;
+  if (array.length === 0) return;
+
+  const getFiltered = array.map((el) => ({ [el.masterrole_alias]: el.allow, }));
+
+  const object = getFiltered.reduce((r, c) => Object.assign(r, c), {});
+
+  return object;
+};
 
 export const convertOperator = ({ items }: { items: GridFilterItem[] }) => {
   // console.log({ data })

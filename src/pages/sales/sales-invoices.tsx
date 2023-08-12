@@ -1,4 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
+import useMenuRole from "@/components/displays/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
 import { getServerAuthSession } from "@/server/auth";
@@ -9,6 +10,8 @@ import { api } from "@/utils/api";
 import {
   convertDateOnly,
   convertOperator,
+  convertRole,
+  findNestedObj,
   formatNumber,
 } from "@/utils/helpers";
 import { useAppStore } from "@/utils/store";
@@ -44,9 +47,22 @@ import { useEffect, useState } from "react";
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
 const title = "Sales Invoice";
+const path = "sales-invoice";
 
-const SalesInvoicesPage: MyPage = () => {
+const tempPolicy: Record<string, boolean> = {
+  list: false,
+  view: false,
+  insert: false,
+  update: false,
+  delete: false,
+};
+
+const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
+  sessionData,
+}) => {
+  const { data: menuRoles } = useMenuRole();
   const [rows, setRows] = useState<ITransaction[]>([]);
+  const [policies, setPolicies] = useState<Record<string, boolean>>(tempPolicy);
   const [countAll, setCountAll] = useState<number>(0);
   const [sortModel, setSortModel] = useState<GridSortModel | undefined>(
     sortDefault
@@ -72,7 +88,7 @@ const SalesInvoicesPage: MyPage = () => {
     isFetching,
   } = api.salesPurchase.getAll.useInfiniteQuery(
     {
-      type: "sales-invoice",
+      type: path,
       limit: 150,
       q: search,
       filter: JSON.stringify(dataFilter),
@@ -92,18 +108,22 @@ const SalesInvoicesPage: MyPage = () => {
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>
-      ) => (
-        <Link
-          href={{
-            pathname: "/form/[[...slug]]",
-            query: { slug: [params.row.id, "view"] },
-          }}
-        >
-          <MuiLink key={params.row.id} component="button">
-            {params.row.trans_text}
-          </MuiLink>
-        </Link>
-      ),
+      ) => {
+        const display = params.row.trans_text;
+        if (sessionData.isSuperAdmin === false && policies.view !== true) {
+          return display;
+        }
+        return (
+          <Link
+            href={{
+              pathname: "/form/[[...slug]]",
+              query: { slug: [params.row.id, "view"] },
+            }}
+          >
+            <MuiLink component="button">{display}</MuiLink>
+          </Link>
+        );
+      },
     },
     {
       field: "trans_order",
@@ -212,11 +232,23 @@ const SalesInvoicesPage: MyPage = () => {
     }
   };
 
-  /* useEffect(() => {
-    if (inView && hasNextPage) {
-      void fetchNextPage();
+  useEffect(() => {
+    if (menuRoles.length > 0) {
+      const isSuperAdmin = sessionData.isSuperAdmin;
+      if (isSuperAdmin) {
+        return;
+      }
+      const selfPath = findNestedObj(menuRoles, path);
+      if (!selfPath) {
+        // return to core path;
+        return;
+      }
+      const child = selfPath.children;
+      const dataPolicies = convertRole(child);
+      if (!dataPolicies) return;
+      setPolicies(dataPolicies);
     }
-  }, [inView, hasNextPage, fetchNextPage]); */
+  }, [menuRoles, sessionData]);
 
   useEffect(() => {
     if (data) {

@@ -1,4 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
+import useMenuRole from "@/components/displays/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
 import { getServerAuthSession } from "@/server/auth";
@@ -9,12 +10,16 @@ import { api } from "@/utils/api";
 import {
   convertDateOnly,
   convertOperator,
+  convertRole,
+  findNestedObj,
   formatNumber,
 } from "@/utils/helpers";
 import { useAppStore } from "@/utils/store";
 import Close from "@mui/icons-material/Close";
-import Done from "@mui/icons-material/Done";
-import HourglassBottom from "@mui/icons-material/HourglassBottom";
+import HourglassEmpty from "@mui/icons-material/HourglassEmpty";
+import HourglassFull from "@mui/icons-material/HourglassFull";
+import HourglassTop from "@mui/icons-material/HourglassTop";
+import Layers from "@mui/icons-material/Layers";
 import Refresh from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -44,9 +49,22 @@ import { useEffect, useState } from "react";
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
 const title = "Sales Order";
+const path = "sales-order";
 
-const SalesOrdersPage: MyPage = () => {
+const tempPolicy: Record<string, boolean> = {
+  list: false,
+  view: false,
+  insert: false,
+  update: false,
+  delete: false,
+};
+
+const SalesOrdersPage: MyPage<{ sessionData: ISessionData }> = ({
+  sessionData,
+}) => {
+  const { data: menuRoles } = useMenuRole();
   const [rows, setRows] = useState<ITransaction[]>([]);
+  const [policies, setPolicies] = useState<Record<string, boolean>>(tempPolicy);
   const [countAll, setCountAll] = useState<number>(0);
   const [sortModel, setSortModel] = useState<GridSortModel | undefined>(
     sortDefault
@@ -72,7 +90,7 @@ const SalesOrdersPage: MyPage = () => {
     isFetching,
   } = api.salesPurchase.getAll.useInfiniteQuery(
     {
-      type: "sales-order",
+      type: path,
       limit: 150,
       q: search,
       filter: JSON.stringify(dataFilter),
@@ -92,22 +110,26 @@ const SalesOrdersPage: MyPage = () => {
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>
-      ) => (
-        <Link
-          href={{
-            pathname: "/form/[[...slug]]",
-            query: { slug: [params.row.id, "view"] },
-          }}
-        >
-          <MuiLink key={params.row.id} component="button">
-            {params.row.trans_text}
-          </MuiLink>
-        </Link>
-      ),
+      ) => {
+        const display = params.row.trans_text;
+        if (sessionData.isSuperAdmin === false && policies.view !== true) {
+          return display;
+        }
+        return (
+          <Link
+            href={{
+              pathname: "/form/[[...slug]]",
+              query: { slug: [params.row.id, "view"] },
+            }}
+          >
+            <MuiLink component="button">{display}</MuiLink>
+          </Link>
+        );
+      },
     },
     {
-      field: "trans_order",
-      headerName: "Order",
+      field: "trans_quote",
+      headerName: "Quotation",
       type: "string",
       flex: 1,
       valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
@@ -136,6 +158,18 @@ const SalesOrdersPage: MyPage = () => {
       },
     },
     {
+      field: "trans_dp",
+      headerName: "Total DP",
+      flex: 1,
+      type: "number",
+      valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
+        const nowValue = formatNumber(
+          params.row.trans_totalvalue?.uangmuka ?? 0
+        );
+        return nowValue;
+      },
+    },
+    {
       field: "trans_entrydate",
       headerName: "Tanggal",
       flex: 1,
@@ -146,31 +180,39 @@ const SalesOrdersPage: MyPage = () => {
       },
     },
     {
-      field: "trans_bayar",
-      headerName: "Status",
+      field: "trans_status",
+      headerName: "Status Pengiriman",
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>
       ) => {
-        const text = params.row.trans_totalvalue?.statusbayar;
+        const text = params.row.trans_totalvalue?.statustrans;
         return (
           <Chip
             icon={
-              text === "Lunas" ? (
-                <Done />
-              ) : text === "Belum Dibayar" ? (
+              text === "FINISH" ? (
+                <HourglassEmpty />
+              ) : text === "PARTIAL" ? (
+                <HourglassTop />
+              ) : text === "CLOSED TRANS" ? (
                 <Close />
+              ) : text === "OVER" ? (
+                <Layers />
               ) : (
-                <HourglassBottom />
+                <HourglassFull />
               )
             }
             label={text}
             color={
-              text === "Lunas"
+              text === "FINISH"
                 ? "success"
-                : text === "Belum Dibayar"
+                : text === "PARTIAL"
+                ? "secondary"
+                : text === "CLOSED TRANS"
                 ? "error"
-                : "info"
+                : text === "OVER"
+                ? "warning"
+                : "primary"
             }
           />
         );
@@ -212,11 +254,23 @@ const SalesOrdersPage: MyPage = () => {
     }
   };
 
-  /* useEffect(() => {
-    if (inView && hasNextPage) {
-      void fetchNextPage();
+  useEffect(() => {
+    if (menuRoles.length > 0) {
+      const isSuperAdmin = sessionData.isSuperAdmin;
+      if (isSuperAdmin) {
+        return;
+      }
+      const selfPath = findNestedObj(menuRoles, path);
+      if (!selfPath) {
+        // return to core path;
+        return;
+      }
+      const child = selfPath.children;
+      const dataPolicies = convertRole(child);
+      if (!dataPolicies) return;
+      setPolicies(dataPolicies);
     }
-  }, [inView, hasNextPage, fetchNextPage]); */
+  }, [menuRoles, sessionData]);
 
   useEffect(() => {
     if (data) {
