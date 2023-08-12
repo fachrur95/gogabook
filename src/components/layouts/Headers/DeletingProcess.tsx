@@ -6,6 +6,7 @@ import CircularProgress, {
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import useNotification from "@/components/displays/Notification";
+import { api } from "@/utils/api";
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -36,28 +37,59 @@ function CircularProgressWithLabel(
 }
 
 const DeletingProcess = () => {
-  const { deleting, notificationMessage } = useAppStore();
+  const { deletingStatus, setDeletingStatus, deletingIds, removeDeletingId } =
+    useAppStore();
   const [progress, setProgress] = useState<number>(0);
   const { setOpenNotification } = useNotification();
+  const mutation = api.salesPurchase.delete.useMutation();
 
   useEffect(() => {
-    if (deleting) {
-      const all = deleting.processing;
-      const outstanding = deleting.processed;
-
-      const countProgress = (outstanding / all) * 100;
-      if (isNaN(countProgress)) {
-        return setProgress(0);
-      }
-      setProgress(countProgress);
+    // if (deletingStatus !== "idle" ) return;
+    if (deletingIds.length > 0) {
+      // setDeletingStatus("running");
+      // const all = deletingIds.length;
+      // for (const id of deletingIds) {
+      const currentId = deletingIds[0];
+      if (!currentId) return;
+      const executeDelete = async () => {
+        await mutation.mutateAsync(
+          { id: currentId },
+          {
+            onError: (err) => {
+              console.log(err);
+              setOpenNotification(err.message);
+            },
+            onSuccess: (data) => {
+              setOpenNotification(data.message);
+            },
+          }
+        );
+        removeDeletingId(currentId);
+        // setDeletingStatus("done");
+      };
+      void executeDelete();
+      // const countProgress = (counter / all) * 100;
+      // if (isNaN(countProgress)) {
+      //   return setProgress(0);
+      // }
+      // setProgress(countProgress);
+      // }
+      // resetDeletingIds();
     }
-  }, [deleting]);
+  }, [
+    deletingStatus,
+    setDeletingStatus,
+    deletingIds,
+    removeDeletingId,
+    mutation,
+    setOpenNotification,
+  ]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (notificationMessage) {
       setOpenNotification(notificationMessage);
     }
-  }, [notificationMessage, setOpenNotification]);
+  }, [notificationMessage, setOpenNotification]); */
 
   if (progress === 0) return null;
 

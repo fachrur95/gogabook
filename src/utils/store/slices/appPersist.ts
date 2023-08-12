@@ -58,6 +58,8 @@ const initialStateForm = {
   },
 }
 
+type DeletingStatusType = "idle" | "running" | "done" | "stopped"
+
 // console.log({ initialStateMenu })
 export interface IAppPersistSlice {
   generalSettings: IGeneralSettings | null,
@@ -117,12 +119,19 @@ export interface IAppPersistSlice {
   },
   setFormOpen: ({ form, id }: { form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory", id?: string }) => void,
   setFormClose: (form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory") => void,
-  deleting: { status: boolean, ids: string[], processing: number, processed: number };
-  setDeleting: (status: boolean) => void;
-  setDeleteCountAllProcess: (value: number) => void;
-  setDeletingId: (ids: string[]) => void;
-  setDeleteProcessed: () => void;
-  resetDeleting: () => void;
+  // deleting: { status: boolean, ids: string[], processing: number, processed: number };
+  // setDeleting: (status: boolean) => void;
+  // setDeleteCountAllProcess: (value: number) => void;
+  // setDeletingId: (ids: string[]) => void;
+  // setDeleteProcessed: () => void;
+  // resetDeleting: () => void;
+  deletingStatus: DeletingStatusType;
+  deletingIds: string[];
+  deletingIdsError: string[];
+  setDeletingIds: (ids: string[]) => void;
+  // resetDeletingIds: () => void;
+  setDeletingStatus: (status: DeletingStatusType) => void;
+  removeDeletingId: (id: string) => void;
 }
 
 const defaultDeleting = {
@@ -145,10 +154,22 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set, get) => ({
   setFormClose: ((form) => set(state => ({ ...state, form: ({ ...state.form, [form]: { open: false, id: undefined } }) }))),
   notificationMessage: null,
   setNotificationMessage: ((message) => set(state => ({ ...state, message: message }))),
-  deleting: defaultDeleting,
-  setDeleting: (status => set((state) => ({ ...state, deleting: { ...state.deleting, status } }))),
-  setDeletingId: (ids => set((state) => ({ ...state, deleting: { ...state.deleting, ids } }))),
-  setDeleteCountAllProcess: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processing: value } }))),
-  setDeleteProcessed: (() => set((state) => ({ ...state, deleting: { ...state.deleting, processed: get().deleting.processed + 1 } }))),
-  resetDeleting: (() => set((state) => ({ ...state, deleting: defaultDeleting })))
+  // deleting: defaultDeleting,
+  // setDeleting: (status => set((state) => ({ ...state, deleting: { ...state.deleting, status } }))),
+  // setDeletingId: (ids => set((state) => ({ ...state, deleting: { ...state.deleting, ids } }))),
+  // setDeleteCountAllProcess: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processing: value } }))),
+  // setDeleteProcessed: (() => set((state) => ({ ...state, deleting: { ...state.deleting, processed: get().deleting.processed + 1 } }))),
+  // resetDeleting: (() => set((state) => ({ ...state, deleting: defaultDeleting })))
+  deletingStatus: "idle",
+  setDeletingStatus: ((status) => set({ deletingStatus: status })),
+  deletingIds: [],
+  deletingIdsError: [],
+  setDeletingIds: ((ids) => set({ deletingIds: ids })),
+  // resetDeletingIds: (() => set({ deletingIds: [] })),
+  removeDeletingId: ((id) => {
+    set({ deletingIds: get().deletingIds.filter((currentId) => currentId !== id) })
+
+    const check = get().deletingIds;
+    console.log({ check })
+  }),
 })

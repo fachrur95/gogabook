@@ -75,7 +75,7 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
   );
   const [dataFilter, setDataFilter] = useState({ sortModel, filterModel });
 
-  const { search } = useAppStore();
+  const { search, deletingStatus } = useAppStore();
   // const { setOpenNotification } = useNotification();
 
   const {
@@ -233,6 +233,12 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
   };
 
   useEffect(() => {
+    if (deletingStatus === "done" || deletingStatus === "stopped") {
+      void refetch();
+    }
+  }, [deletingStatus, refetch]);
+
+  useEffect(() => {
     if (menuRoles.length > 0) {
       const isSuperAdmin = sessionData.isSuperAdmin;
       if (isSuperAdmin) {
@@ -295,7 +301,6 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
               <DeleteMultiple
                 route="salesPurchase"
                 ids={selectionModel as string[]}
-                handleRefresh={() => void refetch()}
               />
               <IconButton onClick={() => void refetch()}>
                 <Refresh />
