@@ -166,10 +166,5 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set, get) => ({
   deletingIdsError: [],
   setDeletingIds: ((ids) => set({ deletingIds: ids })),
   // resetDeletingIds: (() => set({ deletingIds: [] })),
-  removeDeletingId: ((id) => {
-    set({ deletingIds: get().deletingIds.filter((currentId) => currentId !== id) })
-
-    const check = get().deletingIds;
-    console.log({ check })
-  }),
+  removeDeletingId: ((id) => set({ deletingIds: get().deletingIds.filter((currentId) => currentId !== id) })),
 })

@@ -37,8 +37,7 @@ function CircularProgressWithLabel(
 }
 
 const DeletingProcess = () => {
-  const { deletingStatus, setDeletingStatus, deletingIds, removeDeletingId } =
-    useAppStore();
+  const { setDeletingStatus, deletingIds, removeDeletingId } = useAppStore();
   const [progress, setProgress] = useState<number>(0);
   const { setOpenNotification } = useNotification();
   const mutation = api.salesPurchase.delete.useMutation();
@@ -46,7 +45,7 @@ const DeletingProcess = () => {
   useEffect(() => {
     // if (deletingStatus !== "idle" ) return;
     if (deletingIds.length > 0) {
-      // setDeletingStatus("running");
+      setDeletingStatus("running");
       // const all = deletingIds.length;
       // for (const id of deletingIds) {
       const currentId = deletingIds[0];
@@ -65,9 +64,9 @@ const DeletingProcess = () => {
           }
         );
         removeDeletingId(currentId);
-        // setDeletingStatus("done");
       };
       void executeDelete();
+
       // const countProgress = (counter / all) * 100;
       // if (isNaN(countProgress)) {
       //   return setProgress(0);
@@ -75,9 +74,10 @@ const DeletingProcess = () => {
       // setProgress(countProgress);
       // }
       // resetDeletingIds();
+      // } else {
+      // setDeletingStatus("done");
     }
   }, [
-    deletingStatus,
     setDeletingStatus,
     deletingIds,
     removeDeletingId,

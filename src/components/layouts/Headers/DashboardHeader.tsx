@@ -1,14 +1,14 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Avatar } from "@mui/material";
+// import { Avatar } from "@mui/material";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import CoreHeader from "./CoreHeader";
@@ -21,8 +21,8 @@ interface HeaderProps {
 }
 
 const DashboardHeader = (props: HeaderProps) => {
-  const { data: session } = useSession();
-  const { data: sessionData } = useSessionData({ token: session?.accessToken });
+  const { data: sessionData } = useSessionData();
+  // console.log({ sessionData });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -115,13 +115,13 @@ const DashboardHeader = (props: HeaderProps) => {
           aria-haspopup="true"
           color="inherit"
         >
-          {session?.user.image ? (
+          {/* {session?.user.image ? (
             <Avatar src={session?.user.image} />
           ) : (
-            <AccountCircle />
-          )}
+            )} */}
+          <AccountCircle />
         </IconButton>
-        <p>{session?.user.name ?? "-"}</p>
+        <p>{sessionData?.fullName ?? "-"}</p>
       </MenuItem>
     </Menu>
   );
@@ -177,7 +177,7 @@ const DashboardHeader = (props: HeaderProps) => {
             <div className="flex flex-row items-center gap-2">
               <div className="flex flex-col items-end justify-center">
                 <Typography variant="subtitle2" className="capitalize">
-                  {session?.user.name ?? "-"}
+                  {sessionData?.fullName ?? "-"}
                 </Typography>
                 <Typography variant="body2">
                   {sessionData?.privilegeDesc ?? "-"}
@@ -192,11 +192,11 @@ const DashboardHeader = (props: HeaderProps) => {
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
-                {session?.user.image ? (
+                {/* {session?.user.image ? (
                   <Avatar src={session?.user.image} />
                 ) : (
-                  <AccountCircle />
-                )}
+                  )} */}
+                <AccountCircle />
               </IconButton>
             </div>
           </Box>

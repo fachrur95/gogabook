@@ -34,6 +34,7 @@ declare module "next-auth" {
     };
     accessToken: string;
     refreshToken: string;
+    // accessTokenExpires: number;
   }
 
   interface User extends DefaultUser {
@@ -41,15 +42,52 @@ declare module "next-auth" {
     // role: UserRole;
     accessToken: string;
     refreshToken: string;
+    // accessTokenExpires: number;
   }
 
 }
+
+const additionalTime = 10 * 60 * 60; // 1 minute
 
 interface LoginModel {
   username: string;
   password: string;
   platform: string;
 }
+
+/* async function refreshAccessToken(tokenObject: User) {
+  try {
+    const url = `${env.BACKEND_URL}/api/auth/refresh?token=${tokenObject.refreshToken}`
+
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      method: "GET",
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const refreshedTokens: ITokenData = await response.json()
+
+    if (!response.ok) {
+      throw refreshedTokens
+    }
+
+    return {
+      ...tokenObject,
+      accessToken: refreshedTokens.accessToken,
+      accessTokenExpires: Date.now() + additionalTime * 1000,
+      refreshToken: refreshedTokens.refreshToken ?? tokenObject.refreshToken, // Fall back to old refresh token
+    }
+  } catch (error) {
+    console.log(error)
+
+    return {
+      ...tokenObject,
+      error: "RefreshAccessTokenError",
+    }
+  }
+} */
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -69,6 +107,7 @@ export const authOptions: NextAuthOptions = {
           // ...dataSession,
         },
         accessToken: token.accessToken,
+        // accessTokenExpires: token.accessTokenExpires,
         refreshToken: token.refreshToken,
       })
     },
@@ -76,9 +115,14 @@ export const authOptions: NextAuthOptions = {
       if (trigger === "update") {
         return { ...token, accessToken: session?.accessToken, refreshToken: session?.refreshToken }
       }
+      // console.log({ now: Date.now(), exp: user.accessTokenExpires, res: Date.now() > user.accessTokenExpires })
+      /* if (Date.now() > user.accessTokenExpires) {
+        return refreshAccessToken(token as unknown as User)
+      } */
       if (user) {
         token.id = user.id;
         token.accessToken = user.accessToken;
+        // token.accessTokenExpires = user.accessTokenExpires;
         token.refreshToken = user.refreshToken;
       }
       return token;
@@ -137,6 +181,7 @@ export const authOptions: NextAuthOptions = {
           image: null,
           accessToken: dataUser.accessToken,
           refreshToken: dataUser.refreshToken,
+          // accessTokenExpires: Date.now() + additionalTime * 1000,
         };
       },
     }),
@@ -155,7 +200,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 10 * 60 * 60, // 10 hours
+    maxAge: additionalTime, // 10 hours
   }
 };
 

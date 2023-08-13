@@ -30,10 +30,12 @@ import useNotification from "@/components/displays/Notification";
 import type { GetServerSideProps } from "next";
 import { getServerAuthSession } from "@/server/auth";
 import type { InfiniteQueryResult } from "@/types/api-response";
+import useSessionData from "@/components/displays/useSessionData";
 
 const CredentialBusinessPage: MyPage = () => {
   const router = useRouter();
   const { data: session, update: updateSession } = useSession();
+  const { data: sessionData } = useSessionData();
   const { ref, inView } = useInView();
   const [rows, setRows] = useState<IUserBusiness[]>([]);
   const [countAll, setCountAll] = useState<number>(0);
@@ -137,9 +139,7 @@ const CredentialBusinessPage: MyPage = () => {
           </div>
           <div>
             <Typography variant="h5">Sign as</Typography>
-            <Typography variant="body1">
-              {session?.user.email ?? "-"}
-            </Typography>
+            <Typography variant="body1">{sessionData?.email ?? "-"}</Typography>
           </div>
         </Box>
         <Box className="flex flex-row items-center justify-between py-2">
