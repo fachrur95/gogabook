@@ -163,24 +163,23 @@ export const authOptions: NextAuthOptions = {
               Accept: 'application/json',
             },
           },
-        ).then((response) => {
-          return response;
-        }).catch((err) => console.log(err));
+        )
+          .then((response) => response.data)
+          .catch((err) => console.log(err));
 
         if (!user) {
           return null;
         }
 
-        const dataUser = user.data;
-        const session = jwtDecode<ISessionData>(dataUser.accessToken);
+        const session = jwtDecode<ISessionData>(user.accessToken);
 
         return {
           id: session.package,
           email: session.email,
           name: session.fullName,
           image: null,
-          accessToken: dataUser.accessToken,
-          refreshToken: dataUser.refreshToken,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
           // accessTokenExpires: Date.now() + additionalTime * 1000,
         };
       },

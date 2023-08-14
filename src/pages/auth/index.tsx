@@ -33,12 +33,9 @@ const AuthLoginPage: MyPage = () => {
   } = formContext;
 
   const onSubmit = async (data: SignInFormType) => {
-    console.log({ data });
-    await signIn("next-auth", { ...data, callbackUrl: "/" });
-    // if (dataView && id) {
-    //   return void mutationUpdate.mutate({ ...data, id });
-    // }
-    // return void mutationCreate.mutate(data);
+    // console.log({ data });
+    const login = await signIn("next-auth", { ...data, callbackUrl: "/" });
+    console.log({ login });
   };
 
   return (
@@ -95,6 +92,11 @@ const AuthLoginPage: MyPage = () => {
               >
                 Login with Gogabook account
               </Typography>
+              {/* {Object.values(providers).map(
+                (provider: Record<string, string>) => (
+                  <div key={provider.id}>{JSON.stringify(provider)}</div>
+                )
+              )} */}
               <Box className="w-full">
                 <FormContainer formContext={formContext} onSuccess={onSubmit}>
                   <Box className="grid grid-cols-1 gap-4">
@@ -144,6 +146,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+
+  // const providers = await getProviders();
 
   return {
     props: {},

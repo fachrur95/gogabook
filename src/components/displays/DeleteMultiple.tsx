@@ -1,29 +1,44 @@
 import { api } from "@/utils/api";
-import { useAppStore } from "@/utils/store";
 import { LoadingButton } from "@mui/lab";
-import React, { useState } from "react";
-// import useNotification from "./Notification";
+import React, { useEffect, useRef, useState } from "react";
+import useNotification from "./Notification";
 import ConfirmationDialog from "../dialogs/ConfirmationDialog";
 import Delete from "@mui/icons-material/Delete";
+import { useAppStore } from "@/utils/store";
+import { IEventDeleteWorker } from "@/types/worker";
 
 const DeleteMultiple = ({
   route,
   ids,
+  handleRefresh,
 }: {
   route: "salesPurchase";
   ids: string[];
+  handleRefresh?: () => void;
 }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const { deletingIds, setDeletingIds } = useAppStore();
-  const mutation = api[route].delete.useMutation();
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const deleteWorker = useRef<Worker>();
   // const { setOpenNotification } = useNotification();
+  // const mutation = api[route].delete.useMutation();
+  // const { deleteWorker } = useAppStore();
+
+  // console.log({ deleteWorker });
 
   const handleDelete = () => {
-    // if (deleting.status) return;
     setOpen(false);
-    setDeletingIds(ids);
-
+    // setIsDeleting(true);
+    console.log({ deleteWorker });
+    deleteWorker?.current?.postMessage({
+      route,
+      data: ids,
+    });
     // try {
+    //   setIsDeleting(true);
+    //   deleteWorker?.current?.postMessage({
+    //     route,
+    //     data: ids,
+    //   });
     //   /* for (const id of ids) {
     //     await mutation.mutateAsync(
     //       { id },
@@ -37,20 +52,26 @@ const DeleteMultiple = ({
     //         },
     //       }
     //     );
-    //     setDeleteProcessed();
     //   } */
     // } catch (error) {
     //   // Tangani error  yang terjadi selama penghapusan
     //   console.log({ error });
     // } finally {
-    //   // resetDeleting();
-    //   handleRefresh();
+    //   setIsDeleting(false);
+    //   typeof handleRefresh === "function" && handleRefresh();
     // }
   };
 
-  // useEffect(() => {
-  //   if (deletingIds.length === 0) handleRefresh();
-  // }, [deletingIds, handleRefresh]);
+  useEffect(() => {
+    deleteWorker.current = new Worker(
+      new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
+    );
+    deleteWorker.current.onmessage = (
+      event: MessageEvent<IEventDeleteWorker>
+    ) => {
+      console.log({ event });
+    };
+  }, []);
 
   if (ids.length === 0) return null;
 
@@ -58,7 +79,7 @@ const DeleteMultiple = ({
     <>
       <LoadingButton
         onClick={() => setOpen(true)}
-        loading={deletingIds.length > 0}
+        loading={isDeleting}
         startIcon={<Delete />}
         color="error"
       >
