@@ -1,38 +1,44 @@
-import { api } from "@/utils/api";
+// import { api } from "@/utils/api";
 import { LoadingButton } from "@mui/lab";
 import React, { useEffect, useRef, useState } from "react";
-import useNotification from "./Notification";
+// import useNotification from "./Notification";
 import ConfirmationDialog from "../dialogs/ConfirmationDialog";
 import Delete from "@mui/icons-material/Delete";
+// import { useAppStore } from "@/utils/store";
+import type { IEventDeleteWorker, WorkerPathType } from "@/types/worker";
 import { useAppStore } from "@/utils/store";
-import { IEventDeleteWorker } from "@/types/worker";
 
 const DeleteMultiple = ({
   route,
+  path,
   ids,
-  handleRefresh,
 }: {
-  route: "salesPurchase";
+  route: "procedure";
+  path: WorkerPathType;
   ids: string[];
   handleRefresh?: () => void;
 }) => {
+  // const { data } = useSession();
   const [open, setOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const deleteWorker = useRef<Worker>();
+  // const deleteWorker = useRef<Worker>();
   // const { setOpenNotification } = useNotification();
   // const mutation = api[route].delete.useMutation();
-  // const { deleteWorker } = useAppStore();
+  const { setDeletingIds } = useAppStore();
 
   // console.log({ deleteWorker });
 
   const handleDelete = () => {
     setOpen(false);
     // setIsDeleting(true);
-    console.log({ deleteWorker });
-    deleteWorker?.current?.postMessage({
+    console.log({ path });
+    /* deleteWorker?.current?.postMessage({
       route,
+      path,
       data: ids,
-    });
+      token: data?.accessToken,
+    } as DeleteWorkerEventType); */
+    setDeletingIds(route, ids);
     // try {
     //   setIsDeleting(true);
     //   deleteWorker?.current?.postMessage({
@@ -62,7 +68,7 @@ const DeleteMultiple = ({
     // }
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     deleteWorker.current = new Worker(
       new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
     );
@@ -71,7 +77,10 @@ const DeleteMultiple = ({
     ) => {
       console.log({ event });
     };
-  }, []);
+    return () => {
+      deleteWorker.current?.terminate();
+    };
+  }, []); */
 
   if (ids.length === 0) return null;
 

@@ -4,38 +4,40 @@
   }, 5000);
 } */
 
-import { api } from "../api";
+import type { DeleteWorkerEventType, IEventDeleteWorker } from "@/types/worker";
+import axios from "axios";
 
-addEventListener("message", async (event: MessageEvent<{ route: "salesPurchase"; data: string[] }>) => {
+addEventListener("message", (event: MessageEvent<DeleteWorkerEventType>) => {
   const req = event.data;
-  const mutation = api[req.route].delete.useMutation();
+  if (typeof req.token === "undefined") return;
   switch (req.route) {
-    case "salesPurchase":
+    case "procedure":
       for (const id of req.data) {
-        // console.log(id);
-        await mutation.mutateAsync(
-          { id },
-          {
-            onError: (err) => {
-              console.log(err);
-              postMessage({
-                path: req.route,
-                variant: "error",
-                id,
-                message: err.message
-              })
-            },
-            onSuccess: (data) => {
-              console.log(data);
-              postMessage({
-                path: req.route,
-                variant: "success",
-                id,
-                message: data.message
-              })
-            },
-          }
-        );
+        const resultMessage: IEventDeleteWorker = {
+          id,
+          message: `Error Delete id=${id}`,
+          variant: "error",
+          path: req.path
+        };
+        /* try {
+          await axios.delete<{ message: string }>(
+            `${process.env.BACKEND_URL}/api/core/procedure/trans/${id}`,
+            { headers: { Authorization: `Bearer ${req.token}` } }
+          ).then((response) => {
+            const data = response.data;
+            resultMessage.variant = "success";
+            resultMessage.message = data.message;
+          }).catch((err: { response: { data: { message: string } } }) => {
+            // console.log(err)
+            // return { message: err.response.data.message ?? `Error Delete id=${id}` }
+            const data = err.response.data;
+            resultMessage.message = data.message ?? `Error Delete id=${id}`;
+          });
+        } catch (error) {
+          console.log({ error, msg: "test" });
+        } */
+        console.log(id);
+        postMessage(resultMessage);
       }
       break;
 

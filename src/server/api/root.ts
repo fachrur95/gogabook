@@ -5,6 +5,7 @@ import { credentialStoreRouter } from "./routers/credentials/store";
 import { generalSettingRouter } from "./routers/settings/generalSetting";
 import { menuRoleRouter } from "./routers/credentials/menuRole";
 import { salesPurchaseRouter } from "./routers/transactions/sales-purchase";
+import { procedureRouter } from "./routers/transactions/procedure";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   generalSettings: generalSettingRouter,
   menuRole: menuRoleRouter,
   salesPurchase: salesPurchaseRouter,
+  procedure: procedureRouter,
 })
 
 // export type definition of API

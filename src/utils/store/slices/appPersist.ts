@@ -11,7 +11,61 @@ export const initialStateMenu: InitialStateI = Object.fromEntries(
   menuData.map((i) => [i.url, false])
 );
 
-const initialStateForm = {
+type FormType = {
+  branch: {
+    open: boolean;
+    id?: string;
+  },
+  globalMaster: {
+    open: boolean;
+    id?: string;
+  },
+  area: {
+    open: boolean;
+    id?: string;
+  },
+  dorm: {
+    open: boolean;
+    id?: string;
+  },
+  user: {
+    open: boolean;
+    id?: string;
+  },
+  openPermission: {
+    open: boolean;
+    id?: string;
+  },
+  permissionDetail: {
+    open: boolean;
+    id?: string;
+  },
+  permissionComeback: {
+    open: boolean;
+    id?: string;
+  },
+  retireStudent: {
+    open: boolean;
+    id?: string;
+  },
+  dormHistory: {
+    open: boolean;
+    id?: string;
+  },
+  permissionHistory: {
+    open: boolean;
+    id?: string;
+  },
+};
+
+export type DeletingStatusType = "idle" | "running" | "done" | "stopped"
+
+export type DeletingType = {
+  procedure: string[],
+  masterItem: string[],
+};
+
+const initialStateForm: FormType = {
   branch: {
     open: false,
     id: undefined,
@@ -58,7 +112,10 @@ const initialStateForm = {
   },
 }
 
-type DeletingStatusType = "idle" | "running" | "done" | "stopped"
+const defaultDeleting: DeletingType = {
+  procedure: [],
+  masterItem: [],
+}
 
 // console.log({ initialStateMenu })
 export interface IAppPersistSlice {
@@ -71,77 +128,19 @@ export interface IAppPersistSlice {
   setOpenMenu: (url: string, check?: boolean) => void;
   notificationMessage: string | null;
   setNotificationMessage: (message: string) => void;
-  form: {
-    branch: {
-      open: boolean;
-      id?: string;
-    },
-    globalMaster: {
-      open: boolean;
-      id?: string;
-    },
-    area: {
-      open: boolean;
-      id?: string;
-    },
-    dorm: {
-      open: boolean;
-      id?: string;
-    },
-    user: {
-      open: boolean;
-      id?: string;
-    },
-    openPermission: {
-      open: boolean;
-      id?: string;
-    },
-    permissionDetail: {
-      open: boolean;
-      id?: string;
-    },
-    permissionComeback: {
-      open: boolean;
-      id?: string;
-    },
-    retireStudent: {
-      open: boolean;
-      id?: string;
-    },
-    dormHistory: {
-      open: boolean;
-      id?: string;
-    },
-    permissionHistory: {
-      open: boolean;
-      id?: string;
-    },
-  },
-  setFormOpen: ({ form, id }: { form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory", id?: string }) => void,
-  setFormClose: (form: "branch" | "globalMaster" | "area" | "dorm" | "user" | "openPermission" | "permissionDetail" | "permissionComeback" | "retireStudent" | "dormHistory" | "permissionHistory") => void,
-  // deleting: { status: boolean, ids: string[], processing: number, processed: number };
-  // setDeleting: (status: boolean) => void;
-  // setDeleteCountAllProcess: (value: number) => void;
-  // setDeletingId: (ids: string[]) => void;
-  // setDeleteProcessed: () => void;
-  // resetDeleting: () => void;
-  deletingStatus: DeletingStatusType;
-  deletingIds: string[];
-  deletingIdsError: string[];
-  setDeletingIds: (ids: string[]) => void;
-  // resetDeletingIds: () => void;
-  setDeletingStatus: (status: DeletingStatusType) => void;
-  removeDeletingId: (id: string) => void;
+  form: FormType,
+  setFormOpen: ({ form, id }: { form: keyof FormType, id?: string }) => void,
+  setFormClose: (form: keyof FormType) => void,
+  deletingIds: DeletingType;
+  setDeletingIds: (path: keyof DeletingType, ids: string[]) => void;
+  // deletingStatus: DeletingStatusType;
+  // deletingIdsError: string[];
+  // // resetDeletingIds: () => void;
+  // setDeletingStatus: (status: DeletingStatusType) => void;
+  // // removeDeletingId: (path: keyof DeletingType, id: string) => void;
 }
 
-const defaultDeleting = {
-  status: false,
-  ids: [],
-  processing: 0,
-  processed: 0,
-}
-
-export const appPersistSlice: StateCreator<IAppPersistSlice> = (set, get) => ({
+export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
   generalSettings: null,
   menuRoles: [],
   setGeneralSettings: (data => set((state) => ({ ...state, generalSettings: data }))),
@@ -160,11 +159,11 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set, get) => ({
   // setDeleteCountAllProcess: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processing: value } }))),
   // setDeleteProcessed: (() => set((state) => ({ ...state, deleting: { ...state.deleting, processed: get().deleting.processed + 1 } }))),
   // resetDeleting: (() => set((state) => ({ ...state, deleting: defaultDeleting })))
-  deletingStatus: "idle",
-  setDeletingStatus: ((status) => set({ deletingStatus: status })),
-  deletingIds: [],
-  deletingIdsError: [],
-  setDeletingIds: ((ids) => set({ deletingIds: ids })),
+  // deletingStatus: "idle",
+  // setDeletingStatus: ((status) => set({ deletingStatus: status })),
+  deletingIds: defaultDeleting,
+  setDeletingIds: ((path, ids) => set((state) => ({ deletingIds: ({ ...state.deletingIds, [path]: ids }) }))),
+  // deletingIdsError: [],
   // resetDeletingIds: (() => set({ deletingIds: [] })),
-  removeDeletingId: ((id) => set({ deletingIds: get().deletingIds.filter((currentId) => currentId !== id) })),
-})
+  // removeDeletingId: ((id) => set({ deletingIds: get().deletingIds.filter((currentId) => currentId !== id) })),
+});

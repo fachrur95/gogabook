@@ -16,6 +16,5 @@ export const useAppStore = create<StoreState>()(persist((...params) => ({
     openMenu: state.openMenu,
     menuRoles: state.menuRoles,
     generalSettings: state.generalSettings,
-    deleting: state.deleting,
   })
 }))

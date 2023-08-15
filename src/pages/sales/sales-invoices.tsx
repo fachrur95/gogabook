@@ -299,7 +299,8 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
             </Typography>
             <div>
               <DeleteMultiple
-                route="salesPurchase"
+                route="procedure"
+                path={path}
                 ids={selectionModel as string[]}
               />
               <IconButton onClick={() => void refetch()}>
