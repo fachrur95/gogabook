@@ -77,7 +77,7 @@ const SalesDeliveriesPage: MyPage<{ sessionData: ISessionData }> = ({
   );
   const [dataFilter, setDataFilter] = useState({ sortModel, filterModel });
 
-  const { search, deletingStatus } = useAppStore();
+  const { search } = useAppStore();
   // const { setOpenNotification } = useNotification();
 
   const {
@@ -241,12 +241,6 @@ const SalesDeliveriesPage: MyPage<{ sessionData: ISessionData }> = ({
       }
     }
   };
-
-  useEffect(() => {
-    if (deletingStatus === "done" || deletingStatus === "stopped") {
-      void refetch();
-    }
-  }, [deletingStatus, refetch]);
 
   useEffect(() => {
     if (menuRoles.length > 0) {

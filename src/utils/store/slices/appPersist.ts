@@ -117,7 +117,6 @@ const defaultDeleting: DeletingType = {
   masterItem: [],
 }
 
-// console.log({ initialStateMenu })
 export interface IAppPersistSlice {
   generalSettings: IGeneralSettings | null,
   menuRoles: IRole[],
@@ -132,12 +131,7 @@ export interface IAppPersistSlice {
   setFormOpen: ({ form, id }: { form: keyof FormType, id?: string }) => void,
   setFormClose: (form: keyof FormType) => void,
   deletingIds: DeletingType;
-  setDeletingIds: (path: keyof DeletingType, ids: string[]) => void;
-  // deletingStatus: DeletingStatusType;
-  // deletingIdsError: string[];
-  // // resetDeletingIds: () => void;
-  // setDeletingStatus: (status: DeletingStatusType) => void;
-  // // removeDeletingId: (path: keyof DeletingType, id: string) => void;
+  setDeletingIds: (route: keyof DeletingType, ids: string[]) => void;
 }
 
 export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
@@ -153,17 +147,6 @@ export const appPersistSlice: StateCreator<IAppPersistSlice> = (set) => ({
   setFormClose: ((form) => set(state => ({ ...state, form: ({ ...state.form, [form]: { open: false, id: undefined } }) }))),
   notificationMessage: null,
   setNotificationMessage: ((message) => set(state => ({ ...state, message: message }))),
-  // deleting: defaultDeleting,
-  // setDeleting: (status => set((state) => ({ ...state, deleting: { ...state.deleting, status } }))),
-  // setDeletingId: (ids => set((state) => ({ ...state, deleting: { ...state.deleting, ids } }))),
-  // setDeleteCountAllProcess: (value => set((state) => ({ ...state, deleting: { ...state.deleting, processing: value } }))),
-  // setDeleteProcessed: (() => set((state) => ({ ...state, deleting: { ...state.deleting, processed: get().deleting.processed + 1 } }))),
-  // resetDeleting: (() => set((state) => ({ ...state, deleting: defaultDeleting })))
-  // deletingStatus: "idle",
-  // setDeletingStatus: ((status) => set({ deletingStatus: status })),
   deletingIds: defaultDeleting,
-  setDeletingIds: ((path, ids) => set((state) => ({ deletingIds: ({ ...state.deletingIds, [path]: ids }) }))),
-  // deletingIdsError: [],
-  // resetDeletingIds: (() => set({ deletingIds: [] })),
-  // removeDeletingId: ((id) => set({ deletingIds: get().deletingIds.filter((currentId) => currentId !== id) })),
+  setDeletingIds: ((route, ids) => set((state) => ({ ...state, deletingIds: ({ ...state.deletingIds, [route]: ids }) }))),
 });

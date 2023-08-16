@@ -7,13 +7,14 @@ import Delete from "@mui/icons-material/Delete";
 // import { useAppStore } from "@/utils/store";
 import type { IEventDeleteWorker, WorkerPathType } from "@/types/worker";
 import { useAppStore } from "@/utils/store";
+import { DeletingType } from "@/utils/store/slices/appPersist";
 
 const DeleteMultiple = ({
   route,
   path,
   ids,
 }: {
-  route: "procedure";
+  route: keyof DeletingType;
   path: WorkerPathType;
   ids: string[];
   handleRefresh?: () => void;

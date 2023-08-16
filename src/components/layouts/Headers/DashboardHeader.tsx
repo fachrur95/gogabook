@@ -22,7 +22,6 @@ interface HeaderProps {
 
 const DashboardHeader = (props: HeaderProps) => {
   const { data: sessionData } = useSessionData();
-  // console.log({ sessionData });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
