@@ -6,6 +6,9 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useAppStore } from "@/utils/store";
 import { api } from "@/utils/api";
+import { DeleteWorkerEventType, IEventDeleteWorker } from "@/types/worker";
+import { useSession } from "next-auth/react";
+import useNotification from "@/components/displays/Notification";
 // import useNotification from "@/components/displays/Notification";
 // import { useAppStore } from "@/utils/store";
 
@@ -41,22 +44,40 @@ function CircularProgressWithLabel(
 
 const DeletingProcess = () => {
   const { deletingIds } = useAppStore();
-  const mutation = api.procedure.delete.useMutation();
+  // const mutation = api.procedure.delete.useMutation();
 
   const progress = 0;
   // const [route, setRoute] = useState<RouteType>("procedure");
-  // const { setOpenNotification } = useNotification();
+  const { setOpenNotification } = useNotification();
   // console.log({ deletingIds });
 
   useEffect(() => {
-    const execute = async () => {
+    /* const execute = async () => {
       const ids = deletingIds.procedure;
       await Promise.all(
         ids.map(async (id) => await mutation.mutateAsync({ id }))
       );
     };
-    void execute();
-  }, [deletingIds, mutation]);
+    void execute(); */
+
+    const deleteWorker = new Worker(
+      new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
+    );
+    const ids = deletingIds.procedure;
+    deleteWorker.postMessage({
+      route: "procedure",
+      path: "sales-order",
+      data: ids,
+    } as DeleteWorkerEventType);
+
+    deleteWorker.onmessage = (event: MessageEvent<IEventDeleteWorker>) => {
+      const dataEvent = event.data;
+      setOpenNotification(dataEvent.message, dataEvent.variant);
+    };
+    return () => {
+      deleteWorker.terminate();
+    };
+  }, [deletingIds, setOpenNotification]);
 
   if (progress === 0) return null;
 

@@ -33,12 +33,6 @@ const DeleteMultiple = ({
     setOpen(false);
     // setIsDeleting(true);
     console.log({ path });
-    /* deleteWorker?.current?.postMessage({
-      route,
-      path,
-      data: ids,
-      token: data?.accessToken,
-    } as DeleteWorkerEventType); */
     setDeletingIds(route, ids);
     // try {
     //   setIsDeleting(true);

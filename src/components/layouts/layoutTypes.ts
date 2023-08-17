@@ -15,6 +15,6 @@ export type MyPage<P = {}, IP = P> = NextPage<P, IP> & {
 export type MyAppProps = AppProps & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Component: NextComponentType<NextPageContext, any, any> & {
-    Layout: LayoutKeys;
+    Layout?: LayoutKeys;
   };
 } & AppType<{ session: Session | null }>;

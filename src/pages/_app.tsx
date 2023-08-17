@@ -27,7 +27,7 @@ const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
 }: MyAppProps) => {
-  const Layout = Layouts[Component.Layout] ?? ((page: unknown) => page);
+  const Layout = Layouts[Component?.Layout ?? "Plain"] ?? ((page: unknown) => page);
 
   return (
     <TwProvider enableSystem={true} attribute="class" defaultTheme="system">

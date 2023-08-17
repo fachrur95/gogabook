@@ -11,5 +11,4 @@ export type DeleteWorkerEventType = {
   route: "procedure";
   path: WorkerPathType;
   data: string[];
-  token?: string;
 }
