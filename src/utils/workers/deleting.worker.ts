@@ -18,19 +18,15 @@ addEventListener("message", async (event: MessageEvent<DeleteWorkerEventType>) =
           variant: "error",
           path: req.path
         };
-        await axios.delete<{ message: string }>(
-          `/api/self/procedure?id=${id}`,
-          {
-            withCredentials: true,
-          }
-        ).then((response) => {
-          const data = response.data;
-          resultMessage.variant = "success";
-          resultMessage.message = data.message;
-        }).catch((err: { response: { data: { message: string } } }) => {
-          const data = err.response.data;
-          resultMessage.message = data.message ?? `Error Delete id=${id}`;
-        });
+        await axios.delete<{ message: string }>(`/api/self/procedure?id=${id}`, { withCredentials: true, })
+          .then((response) => {
+            const data = response.data;
+            resultMessage.variant = "success";
+            resultMessage.message = data.message;
+          }).catch((err: { response: { data: { message: string } } }) => {
+            const data = err.response.data;
+            resultMessage.message = data.message ?? `Error Delete id=${id}`;
+          });
         postMessage(resultMessage);
       }
       break;

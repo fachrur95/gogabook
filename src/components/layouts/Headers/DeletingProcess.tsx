@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CircularProgress, {
   type CircularProgressProps,
 } from "@mui/material/CircularProgress";
@@ -9,6 +9,7 @@ import { api } from "@/utils/api";
 import { DeleteWorkerEventType, IEventDeleteWorker } from "@/types/worker";
 import { useSession } from "next-auth/react";
 import useNotification from "@/components/displays/Notification";
+import { WorkerContext } from "@/components/context/WorkerContext";
 // import useNotification from "@/components/displays/Notification";
 // import { useAppStore } from "@/utils/store";
 
@@ -43,12 +44,13 @@ function CircularProgressWithLabel(
 // type RouteType = "procedure";
 
 const DeletingProcess = () => {
-  const { deletingIds } = useAppStore();
+  // const { deletingIds } = useAppStore();
+  const { deleteWorker } = useContext(WorkerContext);
   // const mutation = api.procedure.delete.useMutation();
 
   const progress = 0;
   // const [route, setRoute] = useState<RouteType>("procedure");
-  const { setOpenNotification } = useNotification();
+  // const { setOpenNotification } = useNotification();
   // console.log({ deletingIds });
 
   useEffect(() => {
@@ -60,24 +62,21 @@ const DeletingProcess = () => {
     };
     void execute(); */
 
-    const deleteWorker = new Worker(
-      new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
-    );
-    const ids = deletingIds.procedure;
+    /* const ids = deletingIds.procedure;
     deleteWorker.postMessage({
       route: "procedure",
       path: "sales-order",
       data: ids,
-    } as DeleteWorkerEventType);
-
-    deleteWorker.onmessage = (event: MessageEvent<IEventDeleteWorker>) => {
-      const dataEvent = event.data;
-      setOpenNotification(dataEvent.message, dataEvent.variant);
-    };
-    return () => {
-      deleteWorker.terminate();
-    };
-  }, [deletingIds, setOpenNotification]);
+    } as DeleteWorkerEventType); */
+    if (deleteWorker) {
+      deleteWorker.onmessage = (event: MessageEvent<IEventDeleteWorker>) => {
+        console.log({ path: "process", event });
+        // const dataEvent = event.data;
+        // setOpenNotification(dataEvent.message, dataEvent.variant);
+      };
+    }
+  }, [deleteWorker]);
+  // }, [deletingIds, setOpenNotification]);
 
   if (progress === 0) return null;
 
