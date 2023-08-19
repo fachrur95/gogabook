@@ -1,7 +1,5 @@
-import { env } from '@/env.mjs';
 import { getServerAuthSession } from '@/server/auth';
 import axiosSSR from '@/utils/axios/axiosSSR';
-import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -11,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = req.query.id;
 
   if (req.method === "DELETE") {
+    if (!id) return res.status(404).json({ message: "ID Not found!" });
     const config = {
       url: `/core/procedure/trans/${id as string}`,
       method: "DELETE",

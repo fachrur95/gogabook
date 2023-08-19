@@ -11,12 +11,13 @@ addEventListener("message", async (event: MessageEvent<DeleteWorkerEventType>) =
   const req = event.data;
   switch (req.route) {
     case "procedure":
-      for (const id of req.data) {
+      for (const [index, id] of req.data.entries()) {
         const resultMessage: IEventDeleteWorker = {
           id,
           message: `Error Delete id=${id}`,
           variant: "error",
-          path: req.path
+          path: req.path,
+          progress: 0
         };
         await axios.delete<{ message: string }>(`/api/self/procedure?id=${id}`, { withCredentials: true, })
           .then((response) => {
@@ -27,8 +28,15 @@ addEventListener("message", async (event: MessageEvent<DeleteWorkerEventType>) =
             const data = err.response.data;
             resultMessage.message = data.message ?? `Error Delete id=${id}`;
           });
+        resultMessage.progress = ((index + 1) / req.data.length) * 100;
         postMessage(resultMessage);
       }
+      postMessage({
+        id: null,
+        message: "done",
+        variant: "default",
+        path: req.path
+      } as IEventDeleteWorker)
       break;
 
     default:

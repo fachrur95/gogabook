@@ -32,7 +32,6 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_LICENSE_MUIGRID: z.string().min(1),
-    NEXT_PUBLIC_BACKEND_URL: z.string().min(1),
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   },
 
@@ -48,7 +47,6 @@ export const env = createEnv({
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     NEXT_PUBLIC_LICENSE_MUIGRID: process.env.NEXT_PUBLIC_LICENSE_MUIGRID,
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

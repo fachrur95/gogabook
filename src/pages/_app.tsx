@@ -10,16 +10,16 @@ import "@fontsource/roboto/700.css";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider as TwProvider } from "next-themes";
-import { SnackbarProvider } from "notistack";
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 import Router from "next/router";
 import NProgress from "nprogress"; //nprogress module
 import "nprogress/nprogress.css"; //styles of nprogress
 
 import { api } from "@/utils/api";
-import { IEventDeleteWorker } from "@/types/worker";
+import type { IEventDeleteWorker } from "@/types/worker";
 import { WorkerContext } from "@/components/context/WorkerContext";
+import { useAppStore } from "@/utils/store";
 
 //Route Events.
 Router.events.on("routeChangeStart", () => NProgress.start());
@@ -33,33 +33,27 @@ const MyApp = ({
   const Layout =
     Layouts[Component?.Layout ?? "Plain"] ?? ((page: unknown) => page);
 
-  /* const deleteWorker = useMemo(
-    () =>
-      new Worker(
-        new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
-      ),
-    []
-  ); */
-  const deleteWorker: Worker = useMemo(
-    () =>
-      new Worker(
-        new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
-      ),
-    []
+  const deleteWorker = useRef<Worker>();
+  const { setToast, setDeletingProcess } = useAppStore();
+
+  const handleReceiveDeleteResponse = useCallback(
+    (event: MessageEvent<IEventDeleteWorker>) => {
+      const data = event.data;
+      setToast({ message: data.message, variant: data.variant });
+      setDeletingProcess(data.progress ?? 0);
+    },
+    [setToast, setDeletingProcess]
   );
 
-  // useEffect(() => {
-  //   /* deleteWorker.current = new Worker(
-  //     new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
-  //   ); */
-  //   console.log({ deleteWorker });
-  //   deleteWorker.onmessage = (event: MessageEvent<IEventDeleteWorker>) => {
-  //     console.log({ path: "app", event });
-  //   };
-  //   return () => {
-  //     deleteWorker.terminate();
-  //   };
-  // }, []);
+  useEffect(() => {
+    deleteWorker.current = new Worker(
+      new URL("@/utils/workers/deleting.worker.ts", import.meta.url)
+    );
+    deleteWorker.current.onmessage = handleReceiveDeleteResponse;
+    return () => {
+      deleteWorker.current?.terminate();
+    };
+  }, [handleReceiveDeleteResponse]);
 
   return (
     <TwProvider enableSystem={true} attribute="class" defaultTheme="system">
@@ -70,13 +64,11 @@ const MyApp = ({
           }}
         >
           <SessionProvider session={session as Session}>
-            <SnackbarProvider maxSnack={3} dense autoHideDuration={3000}>
-              <ConnectionProvider>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </ConnectionProvider>
-            </SnackbarProvider>
+            <ConnectionProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ConnectionProvider>
           </SessionProvider>
         </WorkerContext.Provider>
       </GlobalContextProvider>

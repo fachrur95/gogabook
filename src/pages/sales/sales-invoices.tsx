@@ -17,6 +17,7 @@ import {
 import { useAppStore } from "@/utils/store";
 import Close from "@mui/icons-material/Close";
 import Done from "@mui/icons-material/Done";
+import MoreVert from "@mui/icons-material/MoreVert";
 import HourglassBottom from "@mui/icons-material/HourglassBottom";
 import Refresh from "@mui/icons-material/Refresh";
 import {
@@ -202,6 +203,35 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       type: "string",
       flex: 1,
       hide: true,
+    },
+    {
+      field: "actions",
+      type: "actions",
+      width: 80,
+      renderCell: (
+        params: GridRenderCellParams<unknown, ITransaction, unknown>
+      ) => {
+        const id = params.row.id;
+        return (
+          <IconButton>
+            <MoreVert />
+          </IconButton>
+        );
+      },
+      /* getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Security />}
+          label="Toggle Admin"
+          onClick={toggleAdmin(params.id)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<FileCopy />}
+          label="Duplicate User"
+          onClick={duplicateUser(params.id)}
+          showInMenu
+        />,
+      ], */
     },
   ];
 

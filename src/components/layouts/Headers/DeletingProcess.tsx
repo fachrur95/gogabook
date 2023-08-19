@@ -1,17 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import CircularProgress, {
   type CircularProgressProps,
 } from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useAppStore } from "@/utils/store";
-import { api } from "@/utils/api";
-import { DeleteWorkerEventType, IEventDeleteWorker } from "@/types/worker";
-import { useSession } from "next-auth/react";
 import useNotification from "@/components/displays/Notification";
-import { WorkerContext } from "@/components/context/WorkerContext";
 // import useNotification from "@/components/displays/Notification";
-// import { useAppStore } from "@/utils/store";
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -44,43 +39,26 @@ function CircularProgressWithLabel(
 // type RouteType = "procedure";
 
 const DeletingProcess = () => {
-  // const { deletingIds } = useAppStore();
-  const { deleteWorker } = useContext(WorkerContext);
-  // const mutation = api.procedure.delete.useMutation();
+  const { toast, deletingProcess } = useAppStore();
+  const { setOpenNotification } = useNotification();
+  // let snackbarId: string | number;
 
-  const progress = 0;
-  // const [route, setRoute] = useState<RouteType>("procedure");
-  // const { setOpenNotification } = useNotification();
-  // console.log({ deletingIds });
+  // const progress = 0;
 
   useEffect(() => {
-    /* const execute = async () => {
-      const ids = deletingIds.procedure;
-      await Promise.all(
-        ids.map(async (id) => await mutation.mutateAsync({ id }))
-      );
-    };
-    void execute(); */
-
-    /* const ids = deletingIds.procedure;
-    deleteWorker.postMessage({
-      route: "procedure",
-      path: "sales-order",
-      data: ids,
-    } as DeleteWorkerEventType); */
-    if (deleteWorker) {
-      deleteWorker.onmessage = (event: MessageEvent<IEventDeleteWorker>) => {
-        console.log({ path: "process", event });
-        // const dataEvent = event.data;
-        // setOpenNotification(dataEvent.message, dataEvent.variant);
-      };
+    if (toast.message !== "" && toast.message !== "done") {
+      setOpenNotification(toast.message, toast.variant);
     }
-  }, [deleteWorker]);
-  // }, [deletingIds, setOpenNotification]);
+  }, [toast, setOpenNotification]);
 
-  if (progress === 0) return null;
+  if (deletingProcess === 0) return null;
 
-  return <CircularProgressWithLabel value={progress} />;
+  return (
+    <div className="flex flex-row items-center gap-2">
+      <Typography variant="subtitle2">Deleting ...</Typography>
+      <CircularProgressWithLabel value={deletingProcess} />
+    </div>
+  );
 };
 
 export default DeletingProcess;

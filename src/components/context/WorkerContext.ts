@@ -1,8 +1,8 @@
 import { createContext } from "react";
 
 type WorkerContextType = {
-  // deleteWorker?: React.MutableRefObject<Worker | undefined>
-  deleteWorker?: Worker
+  deleteWorker?: React.MutableRefObject<Worker | undefined>
+  // deleteWorker?: Worker
 }
 const defaultWorkerContext: WorkerContextType = {
   deleteWorker: undefined,

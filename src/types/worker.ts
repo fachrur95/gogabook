@@ -1,8 +1,9 @@
 export interface IEventDeleteWorker {
-  path: string;
-  variant: "success" | "error",
-  id: string;
-  message: string;
+  path: string | null;
+  variant?: "default" | "success" | "error",
+  id: string | null;
+  message: string | null;
+  progress?: number;
 }
 
 export type WorkerPathType = "sales-invoice" | "sales-order" | "sales-quotation" | "sales-delivery" | "sales-return";

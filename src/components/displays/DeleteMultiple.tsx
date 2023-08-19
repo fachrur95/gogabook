@@ -1,23 +1,21 @@
 // import { api } from "@/utils/api";
 import { LoadingButton } from "@mui/lab";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import useNotification from "./Notification";
 import ConfirmationDialog from "../dialogs/ConfirmationDialog";
 import Delete from "@mui/icons-material/Delete";
 // import { useAppStore } from "@/utils/store";
-import type {
-  DeleteWorkerEventType,
-  IEventDeleteWorker,
-  WorkerPathType,
-} from "@/types/worker";
-import { useAppStore } from "@/utils/store";
-import { DeletingType } from "@/utils/store/slices/appPersist";
+import type { DeleteWorkerEventType, WorkerPathType } from "@/types/worker";
+// import { useAppStore } from "@/utils/store";
+import type { DeletingType } from "@/utils/store/slices/appPersist";
 import { WorkerContext } from "../context/WorkerContext";
+import { useAppStore } from "@/utils/store";
 
 const DeleteMultiple = ({
   route,
   path,
   ids,
+  handleRefresh,
 }: {
   route: keyof DeletingType;
   path: WorkerPathType;
@@ -28,15 +26,12 @@ const DeleteMultiple = ({
   const [open, setOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { deleteWorker } = useContext(WorkerContext);
-  // const { setOpenNotification } = useNotification();
-  // const mutation = api[route].delete.useMutation();
-  // const { setDeletingIds } = useAppStore();
-
-  // console.log({ deleteWorker });
+  const { toast, setToast } = useAppStore();
 
   const handleDelete = () => {
     setOpen(false);
-    deleteWorker?.postMessage({
+    setIsDeleting(true);
+    deleteWorker?.current?.postMessage({
       route,
       path,
       data: ids,
@@ -44,12 +39,12 @@ const DeleteMultiple = ({
   };
 
   useEffect(() => {
-    if (deleteWorker) {
-      deleteWorker.onmessage = (event: MessageEvent<IEventDeleteWorker>) => {
-        console.log({ path: "execute", event });
-      };
+    if (toast.message === "done") {
+      setIsDeleting(false);
+      setToast({ message: "" });
+      typeof handleRefresh === "function" && handleRefresh();
     }
-  }, [deleteWorker]);
+  }, [toast, handleRefresh, setToast]);
 
   if (ids.length === 0) return null;
 
