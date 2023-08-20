@@ -12,7 +12,7 @@ import { signOut } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import CoreHeader from "./CoreHeader";
-import useSessionData from "@/components/displays/useSessionData";
+import useSessionData from "@/components/hooks/useSessionData";
 import DeletingProcess from "./DeletingProcess";
 
 interface HeaderProps {

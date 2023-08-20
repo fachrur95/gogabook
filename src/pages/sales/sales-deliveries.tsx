@@ -1,5 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
-import useMenuRole from "@/components/displays/useMenuRole";
+import useMenuRole from "@/components/hooks/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
 import { getServerAuthSession } from "@/server/auth";
@@ -306,6 +306,7 @@ const SalesDeliveriesPage: MyPage<{ sessionData: ISessionData }> = ({
                 route="procedure"
                 path={path}
                 ids={selectionModel as string[]}
+                handleRefresh={() => void refetch()}
               />
               <IconButton onClick={() => void refetch()}>
                 <Refresh />

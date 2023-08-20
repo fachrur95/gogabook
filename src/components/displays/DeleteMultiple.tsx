@@ -24,9 +24,8 @@ const DeleteMultiple = ({
 }) => {
   // const { data } = useSession();
   const [open, setOpen] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { deleteWorker } = useContext(WorkerContext);
-  const { toast, setToast } = useAppStore();
+  const { toast, setToast, isDeleting, setIsDeleting } = useAppStore();
 
   const handleDelete = () => {
     setOpen(false);
@@ -44,7 +43,7 @@ const DeleteMultiple = ({
       setToast({ message: "" });
       typeof handleRefresh === "function" && handleRefresh();
     }
-  }, [toast, handleRefresh, setToast]);
+  }, [toast, handleRefresh, setToast, setIsDeleting]);
 
   if (ids.length === 0) return null;
 

@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { type DataMenuType } from "./data";
 import { findNestedObj } from "@/utils/helpers";
-import useMenuRole from "@/components/displays/useMenuRole";
+import useMenuRole from "@/components/hooks/useMenuRole";
 
 interface ISidebarCollapse {
   openDrawer: boolean;

@@ -3,13 +3,12 @@ import {
   type OptionsObject,
   type SnackbarKey,
   type SnackbarMessage,
-  type VariantType,
 } from "notistack";
 
 const useNotification = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const setOpenNotification = (msg: SnackbarMessage, variant?: VariantType) => {
+  const setOpenNotification = (msg: SnackbarMessage, options?: OptionsObject) => {
     const defaultValue = "Some error occurred!";
     const persistNotification = {
       anchorOrigin: {
@@ -22,7 +21,7 @@ const useNotification = () => {
 
     return enqueueSnackbar(msg ?? defaultValue, {
       ...persistNotification,
-      variant: variant,
+      ...options,
     });
   };
 

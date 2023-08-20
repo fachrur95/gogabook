@@ -30,7 +30,7 @@ import useNotification from "@/components/displays/Notification";
 import type { GetServerSideProps } from "next";
 import { getServerAuthSession } from "@/server/auth";
 import type { InfiniteQueryResult } from "@/types/api-response";
-import useSessionData from "@/components/displays/useSessionData";
+import useSessionData from "@/components/hooks/useSessionData";
 
 const CredentialBusinessPage: MyPage = () => {
   const router = useRouter();

@@ -14,6 +14,8 @@ export interface IAppUnPersistSlice {
   setToast: (data: ToastType) => void;
   deletingProcess: number;
   setDeletingProcess: (value: number) => void;
+  isDeleting: boolean;
+  setIsDeleting: (value: boolean) => void;
   // importWorker: React.MutableRefObject<Worker | undefined> | undefined;
   // deleteWorker: React.MutableRefObject<Worker | undefined> | undefined;
   // setImportWorker: (worker: React.MutableRefObject<Worker | undefined>) => void;
@@ -27,6 +29,8 @@ export const appUnPersistSlice: StateCreator<IAppUnPersistSlice> = (set) => ({
   setToast: (data => set((state) => ({ ...state, toast: data }))),
   deletingProcess: 0,
   setDeletingProcess: ((value) => set((state) => ({ ...state, deletingProcess: value }))),
+  isDeleting: false,
+  setIsDeleting: ((value) => set((state) => ({ ...state, isDeleting: value })))
   // importWorker: undefined,
   // deleteWorker: undefined,
   // setImportWorker: ((worker) => set({ importWorker: worker })),

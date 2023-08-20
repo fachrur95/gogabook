@@ -4,7 +4,7 @@ import SidebarItem from "./SidebarItem";
 import menuData from "./data";
 import { findNestedObj } from "@/utils/helpers";
 import { useEffect, useState } from "react";
-import useMenuRole from "@/components/displays/useMenuRole";
+import useMenuRole from "@/components/hooks/useMenuRole";
 
 const SidebarMenu = ({ openDrawer }: { openDrawer: boolean }) => {
   const { data: menuRoles } = useMenuRole();

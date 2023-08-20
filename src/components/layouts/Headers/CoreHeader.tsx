@@ -1,7 +1,9 @@
+import useGeneralSetting from "@/components/hooks/useGeneralSetting";
 import AppBar from "@mui/material/AppBar";
 import Slide from "@mui/material/Slide";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
-import React from "react";
+import { useTheme } from "next-themes";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   /**
@@ -29,11 +31,26 @@ function HideOnScroll(props: Props) {
 }
 
 const CoreHeader = (props: Props) => {
+  const { data: dataGeneralSetting } = useGeneralSetting();
+  const [currentTheme, setCurrentTheme] = useState<string | undefined>(
+    "system"
+  );
+  const { theme, systemTheme } = useTheme();
+
+  useEffect(() => {
+    const curTheme = theme === "system" ? systemTheme : theme;
+    // console.log({ curTheme });
+    setCurrentTheme(curTheme);
+  }, [theme, systemTheme]);
   return (
     <HideOnScroll {...props}>
       <AppBar
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor:
+            currentTheme === "dark"
+              ? undefined
+              : dataGeneralSetting?.generalsetting_warna ?? undefined,
         }}
       >
         {props.children}
