@@ -17,9 +17,12 @@ import {
 import { useAppStore } from "@/utils/store";
 import Close from "@mui/icons-material/Close";
 import Done from "@mui/icons-material/Done";
-import MoreVert from "@mui/icons-material/MoreVert";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import HourglassBottom from "@mui/icons-material/HourglassBottom";
 import Refresh from "@mui/icons-material/Refresh";
+import EditIcon from "@mui/icons-material/Edit";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import {
   Box,
   Chip,
@@ -44,16 +47,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 // import { LoadingPage } from "@/components/layouts/LoadingPage";
 // import useNotification from "@/components/displays/Notification";
-
-import { styled, alpha } from "@mui/material/styles";
-import Menu, { MenuProps } from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
-import Divider from "@mui/material/Divider";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CustomMenu from "@/components/displays/StyledMenu";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
@@ -67,49 +61,6 @@ const tempPolicy: Record<string, boolean> = {
   update: false,
   delete: false,
 };
-
-const StyledMenu = styled((props: MenuProps) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "right",
-    }}
-    {...props}
-  />
-))(({ theme }) => ({
-  "& .MuiPaper-root": {
-    borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    color:
-      theme.palette.mode === "light"
-        ? "rgb(55, 65, 81)"
-        : theme.palette.grey[300],
-    boxShadow:
-      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-    "& .MuiMenu-list": {
-      padding: "4px 0",
-    },
-    "& .MuiMenuItem-root": {
-      "& .MuiSvgIcon-root": {
-        fontSize: 18,
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
-      },
-      "&:active": {
-        backgroundColor: alpha(
-          theme.palette.primary.main,
-          theme.palette.action.selectedOpacity
-        ),
-      },
-    },
-  },
-}));
 
 const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
@@ -128,18 +79,6 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
     []
   );
   const [dataFilter, setDataFilter] = useState({ sortModel, filterModel });
-
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>, id: string) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedId(id);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-    setSelectedId(null);
-  };
 
   const { search } = useAppStore();
   // const { setOpenNotification } = useNotification();
@@ -278,61 +217,34 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       ) => {
         const id = params.row.id;
         return (
-          <>
-            <IconButton
-              aria-label="more"
-              id="long-button"
-              aria-controls={open ? "long-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-haspopup="true"
-              onClick={(event) => handleClick(event, id)}
-            >
-              <MoreVert />
-            </IconButton>
-            <StyledMenu
-              id="demo-customized-menu"
-              MenuListProps={{
-                "aria-labelledby": "demo-customized-button",
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={() => console.log(selectedId)} disableRipple>
-                <EditIcon />
-                Edit
-              </MenuItem>
-              <MenuItem onClick={() => console.log(selectedId)} disableRipple>
-                <FileCopyIcon />
-                Duplicate
-              </MenuItem>
-              <Divider sx={{ my: 0.5 }} />
-              <MenuItem onClick={() => console.log(selectedId)} disableRipple>
-                <ArchiveIcon />
-                Archive
-              </MenuItem>
-              <MenuItem onClick={() => console.log(selectedId)} disableRipple>
-                <MoreHorizIcon />
-                More
-              </MenuItem>
-            </StyledMenu>
-          </>
+          <CustomMenu
+            id={id}
+            menus={[
+              {
+                icon: <EditIcon />,
+                label: "Edit",
+                onClick: (params) => console.log(params),
+              },
+              {
+                icon: <FileCopyIcon />,
+                label: "Duplicate",
+                onClick: (params) => console.log(params),
+              },
+              { label: "divider" },
+              {
+                icon: <ArchiveIcon />,
+                label: "Archive",
+                onClick: (params) => console.log(params),
+              },
+              {
+                icon: <MoreHorizIcon />,
+                label: "More",
+                onClick: (params) => console.log(params),
+              },
+            ]}
+          />
         );
       },
-      /* getActions: (params) => [
-        <GridActionsCellItem
-          icon={<Security />}
-          label="Toggle Admin"
-          onClick={toggleAdmin(params.id)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<FileCopy />}
-          label="Duplicate User"
-          onClick={duplicateUser(params.id)}
-          showInMenu
-        />,
-      ], */
     },
   ];
 

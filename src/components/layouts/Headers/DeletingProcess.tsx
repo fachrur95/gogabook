@@ -40,21 +40,6 @@ function CircularProgressWithLabel(
   );
 }
 
-interface NotificationContentProps {
-  message: string;
-  progress: number;
-}
-
-const NotificationContent: React.FC<NotificationContentProps> = ({
-  message,
-  progress,
-}) => (
-  <div>
-    {message}
-    <progress value={progress} max={100} />
-  </div>
-);
-
 const DeletingProcess = () => {
   const { toast, deletingProcess } = useAppStore();
   const { setOpenNotification } = useNotification();
