@@ -10,14 +10,14 @@ const useNotification = () => {
 
   const setOpenNotification = (msg: SnackbarMessage, options?: OptionsObject) => {
     const defaultValue = "Some error occurred!";
-    const persistNotification = {
+    const persistNotification: OptionsObject = {
       anchorOrigin: {
         vertical: "bottom",
         horizontal: "left",
       },
       persist: false,
       variant: "info",
-    } as OptionsObject;
+    };
 
     return enqueueSnackbar(msg ?? defaultValue, {
       ...persistNotification,
