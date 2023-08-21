@@ -38,7 +38,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 // import { LoadingPage } from "@/components/layouts/LoadingPage";
-// import useNotification from "@/components/displays/Notification";
+// import useNotification from "@/components/hooks/useNotification";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 

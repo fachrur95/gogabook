@@ -25,7 +25,7 @@ import { useInView } from "react-intersection-observer";
 import type { IUserBusiness } from "@/types/masters/userBusiness";
 import { useAppStore } from "@/utils/store";
 import { useRouter } from "next/router";
-import useNotification from "@/components/displays/Notification";
+import useNotification from "@/components/hooks/useNotification";
 import type { GetServerSideProps } from "next";
 import { getServerAuthSession } from "@/server/auth";
 import jwtDecode from "jwt-decode";

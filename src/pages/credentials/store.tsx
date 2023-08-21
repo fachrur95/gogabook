@@ -24,7 +24,7 @@ import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useInView } from "react-intersection-observer";
 import { useAppStore } from "@/utils/store";
 import { useRouter } from "next/router";
-import useNotification from "@/components/displays/Notification";
+import useNotification from "@/components/hooks/useNotification";
 import type { IUserBusinessDetail } from "@/types/masters/userBusinessDetail";
 import type { GetServerSideProps } from "next";
 import { getServerAuthSession } from "@/server/auth";

@@ -5,12 +5,12 @@ import CircularProgress, {
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useAppStore } from "@/utils/store";
-import useNotification from "@/components/displays/Notification";
+import useNotification from "@/components/hooks/useNotification";
 // import { SnackbarContent, type SnackbarKey } from "notistack";
 // import LinearProgress from "@mui/material/LinearProgress";
 // import { IconButton } from "@mui/material";
 // import Close from "@mui/icons-material/Close";
-// import useNotification from "@/components/displays/Notification";
+// import useNotification from "@/components/hooks/useNotification";
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }

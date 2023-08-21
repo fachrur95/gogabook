@@ -46,7 +46,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 // import { LoadingPage } from "@/components/layouts/LoadingPage";
-// import useNotification from "@/components/displays/Notification";
+// import useNotification from "@/components/hooks/useNotification";
 import CustomMenu from "@/components/displays/StyledMenu";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
