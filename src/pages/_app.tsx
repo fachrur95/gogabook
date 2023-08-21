@@ -18,7 +18,7 @@ import "nprogress/nprogress.css"; //styles of nprogress
 
 import { api } from "@/utils/api";
 import type { IEventDeleteWorker } from "@/types/worker";
-import { WorkerContext } from "@/components/context/WorkerContext";
+import { WorkerContext } from "@/context/WorkerContext";
 import { useAppStore } from "@/utils/store";
 
 //Route Events.
@@ -58,11 +58,7 @@ const MyApp = ({
   return (
     <TwProvider enableSystem={true} attribute="class" defaultTheme="system">
       <GlobalContextProvider>
-        <WorkerContext.Provider
-          value={{
-            deleteWorker,
-          }}
-        >
+        <WorkerContext.Provider value={{ deleteWorker }}>
           <SessionProvider session={session as Session}>
             <ConnectionProvider>
               <Layout>
