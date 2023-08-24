@@ -1,4 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
+import CustomMenu from "@/components/displays/StyledMenu";
 import useMenuRole from "@/components/hooks/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
@@ -15,17 +16,13 @@ import {
   formatNumber,
 } from "@/utils/helpers";
 import { useAppStore } from "@/utils/store";
-import Close from "@mui/icons-material/Close";
-import Done from "@mui/icons-material/Done";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import HourglassBottom from "@mui/icons-material/HourglassBottom";
 import Refresh from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   Box,
-  Chip,
   IconButton,
   Link as MuiLink,
   Paper,
@@ -45,15 +42,14 @@ import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { WorkerPathType } from "@/types/worker";
 // import { LoadingPage } from "@/components/layouts/LoadingPage";
 // import useNotification from "@/components/hooks/useNotification";
-import CustomMenu from "@/components/displays/StyledMenu";
-import type { WorkerPathType } from "@/types/worker";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
-const title = "Sales Invoice";
-const path: WorkerPathType = "sales-invoice";
+const title = "Purchase Return";
+const path: WorkerPathType = "purchase-return";
 
 const tempPolicy: Record<string, boolean> = {
   list: false,
@@ -63,7 +59,7 @@ const tempPolicy: Record<string, boolean> = {
   delete: false,
 };
 
-const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
+const PurchaseReturnsPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
 }) => {
   const { data: menuRoles } = useMenuRole();
@@ -132,8 +128,8 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       },
     },
     {
-      field: "trans_order",
-      headerName: "Order",
+      field: "trans_invoice",
+      headerName: "Invoice",
       type: "string",
       flex: 1,
       valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
@@ -169,37 +165,6 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
         const nowValue = convertDateOnly(params.row.trans_entrydate ?? 0);
         return nowValue;
-      },
-    },
-    {
-      field: "trans_bayar",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (
-        params: GridRenderCellParams<unknown, ITransaction, unknown>
-      ) => {
-        const text = params.row.trans_totalvalue?.statusbayar;
-        return (
-          <Chip
-            icon={
-              text === "Lunas" ? (
-                <Done />
-              ) : text === "Belum Dibayar" ? (
-                <Close />
-              ) : (
-                <HourglassBottom />
-              )
-            }
-            label={text}
-            color={
-              text === "Lunas"
-                ? "success"
-                : text === "Belum Dibayar"
-                ? "error"
-                : "info"
-            }
-          />
-        );
       },
     },
     {
@@ -423,5 +388,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default SalesInvoicesPage;
-SalesInvoicesPage.Layout = "Dashboard";
+export default PurchaseReturnsPage;
+PurchaseReturnsPage.Layout = "Dashboard";

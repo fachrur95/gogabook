@@ -53,6 +53,7 @@ type MenuType = {
   label: string;
   icon?: React.ReactNode;
   onClick?: (selectedId?: string) => void;
+  hidden?: boolean;
 };
 
 type CustomMenuType = {
@@ -96,20 +97,22 @@ const CustomMenu = ({ id, menus }: CustomMenuType) => {
         open={open}
         onClose={handleClose}
       >
-        {menus.map((menu, index) =>
-          menu.label === "divider" ? (
-            <Divider key={index} sx={{ my: 0.5 }} />
-          ) : (
-            <MenuItem
-              key={index}
-              onClick={() => menu.onClick?.(selectedId)}
-              disableRipple
-            >
-              {menu.icon}
-              {menu.label}
-            </MenuItem>
-          )
-        )}
+        {menus
+          .filter((el) => el.hidden !== true)
+          .map((menu, index) =>
+            menu.label === "divider" ? (
+              <Divider key={index} sx={{ my: 0.5 }} />
+            ) : (
+              <MenuItem
+                key={index}
+                onClick={() => menu.onClick?.(selectedId)}
+                disableRipple
+              >
+                {menu.icon}
+                {menu.label}
+              </MenuItem>
+            )
+          )}
       </StyledMenu>
     </>
   );

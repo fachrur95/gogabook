@@ -6,6 +6,11 @@ import { generalSettingRouter } from "./routers/settings/generalSetting";
 import { menuRoleRouter } from "./routers/credentials/menuRole";
 import { salesPurchaseRouter } from "./routers/transactions/sales-purchase";
 import { procedureRouter } from "./routers/transactions/procedure";
+import { liabilityRouter } from "./routers/transactions/liability";
+import { paymentRouter } from "./routers/transactions/payment";
+import { productionRouter } from "./routers/transactions/production";
+import { transferFundRouter } from "./routers/transactions/transfer-fund";
+import { transferItemRouter } from "./routers/transactions/transfer-item";
 
 /**
  * This is the primary router for your server.
@@ -18,8 +23,13 @@ export const appRouter = createTRPCRouter({
   credentialStore: credentialStoreRouter,
   generalSettings: generalSettingRouter,
   menuRole: menuRoleRouter,
-  salesPurchase: salesPurchaseRouter,
   procedure: procedureRouter,
+  salesPurchase: salesPurchaseRouter,
+  liability: liabilityRouter,
+  payment: paymentRouter,
+  production: productionRouter,
+  transferFund: transferFundRouter,
+  transferItem: transferItemRouter,
 })
 
 // export type definition of API

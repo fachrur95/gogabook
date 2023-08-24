@@ -39,7 +39,11 @@ const MyApp = ({
   const handleReceiveDeleteResponse = useCallback(
     (event: MessageEvent<IEventDeleteWorker>) => {
       const data = event.data;
-      setToast({ message: data.message, variant: data.variant });
+      setToast({
+        message: data.message,
+        variant: data.variant,
+        path: data.path ?? undefined,
+      });
       setDeletingProcess(data.progress ?? 0);
     },
     [setToast, setDeletingProcess]

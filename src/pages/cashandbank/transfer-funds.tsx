@@ -15,17 +15,13 @@ import {
   formatNumber,
 } from "@/utils/helpers";
 import { useAppStore } from "@/utils/store";
-import Close from "@mui/icons-material/Close";
-import Done from "@mui/icons-material/Done";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import HourglassBottom from "@mui/icons-material/HourglassBottom";
 import Refresh from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import {
   Box,
-  Chip,
   IconButton,
   Link as MuiLink,
   Paper,
@@ -52,8 +48,8 @@ import type { WorkerPathType } from "@/types/worker";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
-const title = "Sales Invoice";
-const path: WorkerPathType = "sales-invoice";
+const title = "Transfer Funds";
+const path: WorkerPathType = "transfer-funds";
 
 const tempPolicy: Record<string, boolean> = {
   list: false,
@@ -63,7 +59,7 @@ const tempPolicy: Record<string, boolean> = {
   delete: false,
 };
 
-const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
+const TransferFundsPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
 }) => {
   const { data: menuRoles } = useMenuRole();
@@ -92,9 +88,8 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
     hasNextPage,
     refetch,
     isFetching,
-  } = api.salesPurchase.getAll.useInfiniteQuery(
+  } = api.transferFund.getAll.useInfiniteQuery(
     {
-      type: path,
       limit: 150,
       q: search,
       filter: JSON.stringify(dataFilter),
@@ -132,21 +127,18 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       },
     },
     {
-      field: "trans_order",
-      headerName: "Order",
+      field: "masteraccount_description",
+      headerName: "Akun Tujuan",
       type: "string",
       flex: 1,
       valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
-        return params.row.trans_parent?.trans_text ?? "-";
-      },
-    },
-    {
-      field: "masterpartner_description",
-      headerName: "Partner",
-      type: "string",
-      flex: 1,
-      valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
-        return params.row.trans_partner?.masterpartner_alias ?? "-";
+        return params.row.masteraccount
+          ? `${params.row.masteraccount?.masteraccount_description} ${
+              params.row.masteraccount?.masteraccount_alias
+                ? `- ${params.row.masteraccount?.masteraccount_alias}`
+                : ""
+            }` ?? "-"
+          : "-";
       },
     },
     {
@@ -169,37 +161,6 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
         const nowValue = convertDateOnly(params.row.trans_entrydate ?? 0);
         return nowValue;
-      },
-    },
-    {
-      field: "trans_bayar",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (
-        params: GridRenderCellParams<unknown, ITransaction, unknown>
-      ) => {
-        const text = params.row.trans_totalvalue?.statusbayar;
-        return (
-          <Chip
-            icon={
-              text === "Lunas" ? (
-                <Done />
-              ) : text === "Belum Dibayar" ? (
-                <Close />
-              ) : (
-                <HourglassBottom />
-              )
-            }
-            label={text}
-            color={
-              text === "Lunas"
-                ? "success"
-                : text === "Belum Dibayar"
-                ? "error"
-                : "info"
-            }
-          />
-        );
       },
     },
     {
@@ -423,5 +384,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default SalesInvoicesPage;
-SalesInvoicesPage.Layout = "Dashboard";
+export default TransferFundsPage;
+TransferFundsPage.Layout = "Dashboard";

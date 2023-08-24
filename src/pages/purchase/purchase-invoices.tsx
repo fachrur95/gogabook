@@ -52,8 +52,8 @@ import type { WorkerPathType } from "@/types/worker";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
-const title = "Sales Invoice";
-const path: WorkerPathType = "sales-invoice";
+const title = "Purchase Invoice";
+const path: WorkerPathType = "purchase-invoice";
 
 const tempPolicy: Record<string, boolean> = {
   list: false,
@@ -63,7 +63,7 @@ const tempPolicy: Record<string, boolean> = {
   delete: false,
 };
 
-const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
+const PurchaseInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
 }) => {
   const { data: menuRoles } = useMenuRole();
@@ -423,5 +423,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default SalesInvoicesPage;
-SalesInvoicesPage.Layout = "Dashboard";
+export default PurchaseInvoicesPage;
+PurchaseInvoicesPage.Layout = "Dashboard";

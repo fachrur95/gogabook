@@ -1,4 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
+import CustomMenu from "@/components/displays/StyledMenu";
 import useMenuRole from "@/components/hooks/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
@@ -16,13 +17,15 @@ import {
 } from "@/utils/helpers";
 import { useAppStore } from "@/utils/store";
 import Close from "@mui/icons-material/Close";
-import Done from "@mui/icons-material/Done";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import HourglassBottom from "@mui/icons-material/HourglassBottom";
+import HourglassEmpty from "@mui/icons-material/HourglassEmpty";
+import HourglassFull from "@mui/icons-material/HourglassFull";
+import HourglassTop from "@mui/icons-material/HourglassTop";
+import Layers from "@mui/icons-material/Layers";
 import Refresh from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   Box,
   Chip,
@@ -45,15 +48,14 @@ import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { WorkerPathType } from "@/types/worker";
 // import { LoadingPage } from "@/components/layouts/LoadingPage";
 // import useNotification from "@/components/hooks/useNotification";
-import CustomMenu from "@/components/displays/StyledMenu";
-import type { WorkerPathType } from "@/types/worker";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
-const title = "Sales Invoice";
-const path: WorkerPathType = "sales-invoice";
+const title = "Purchase Order";
+const path: WorkerPathType = "purchase-order";
 
 const tempPolicy: Record<string, boolean> = {
   list: false,
@@ -63,7 +65,7 @@ const tempPolicy: Record<string, boolean> = {
   delete: false,
 };
 
-const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
+const PurchaseOrdersPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
 }) => {
   const { data: menuRoles } = useMenuRole();
@@ -132,8 +134,8 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       },
     },
     {
-      field: "trans_order",
-      headerName: "Order",
+      field: "trans_quote",
+      headerName: "Quotation",
       type: "string",
       flex: 1,
       valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
@@ -162,6 +164,18 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       },
     },
     {
+      field: "trans_dp",
+      headerName: "Total DP",
+      flex: 1,
+      type: "number",
+      valueGetter: (params: GridValueGetterParams<unknown, ITransaction>) => {
+        const nowValue = formatNumber(
+          params.row.trans_totalvalue?.uangmuka ?? 0
+        );
+        return nowValue;
+      },
+    },
+    {
       field: "trans_entrydate",
       headerName: "Tanggal",
       flex: 1,
@@ -172,31 +186,39 @@ const SalesInvoicesPage: MyPage<{ sessionData: ISessionData }> = ({
       },
     },
     {
-      field: "trans_bayar",
-      headerName: "Status",
+      field: "trans_status",
+      headerName: "Status Pengiriman",
       flex: 1,
       renderCell: (
         params: GridRenderCellParams<unknown, ITransaction, unknown>
       ) => {
-        const text = params.row.trans_totalvalue?.statusbayar;
+        const text = params.row.trans_totalvalue?.statustrans;
         return (
           <Chip
             icon={
-              text === "Lunas" ? (
-                <Done />
-              ) : text === "Belum Dibayar" ? (
+              text === "FINISH" ? (
+                <HourglassEmpty />
+              ) : text === "PARTIAL" ? (
+                <HourglassTop />
+              ) : text === "CLOSED TRANS" ? (
                 <Close />
+              ) : text === "OVER" ? (
+                <Layers />
               ) : (
-                <HourglassBottom />
+                <HourglassFull />
               )
             }
             label={text}
             color={
-              text === "Lunas"
+              text === "FINISH"
                 ? "success"
-                : text === "Belum Dibayar"
+                : text === "PARTIAL"
+                ? "secondary"
+                : text === "CLOSED TRANS"
                 ? "error"
-                : "info"
+                : text === "OVER"
+                ? "warning"
+                : "primary"
             }
           />
         );
@@ -423,5 +445,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default SalesInvoicesPage;
-SalesInvoicesPage.Layout = "Dashboard";
+export default PurchaseOrdersPage;
+PurchaseOrdersPage.Layout = "Dashboard";

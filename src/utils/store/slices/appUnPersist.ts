@@ -1,7 +1,8 @@
+import type { WorkerPathType } from "@/types/worker";
 import type { VariantType } from "notistack";
 import { type StateCreator } from "zustand";
 
-type ToastType = { message: string | null, variant?: VariantType };
+type ToastType = { message: string | null, variant?: VariantType, path?: WorkerPathType };
 
 const defaultToast: ToastType = {
   message: "",

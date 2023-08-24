@@ -1,4 +1,5 @@
 import DeleteMultiple from "@/components/displays/DeleteMultiple";
+import CustomMenu from "@/components/displays/StyledMenu";
 import useMenuRole from "@/components/hooks/useMenuRole";
 import type { MyPage } from "@/components/layouts/layoutTypes";
 import DataGridProAdv from "@/components/tables/datagrid/DataGridProAdv";
@@ -21,6 +22,10 @@ import HourglassFull from "@mui/icons-material/HourglassFull";
 import HourglassTop from "@mui/icons-material/HourglassTop";
 import Layers from "@mui/icons-material/Layers";
 import Refresh from "@mui/icons-material/Refresh";
+import EditIcon from "@mui/icons-material/Edit";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   Box,
   Chip,
@@ -43,13 +48,14 @@ import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { WorkerPathType } from "@/types/worker";
 // import { LoadingPage } from "@/components/layouts/LoadingPage";
 // import useNotification from "@/components/hooks/useNotification";
 
 const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
 
 const title = "Sales Quotation";
-const path = "sales-quotation";
+const path: WorkerPathType = "sales-quotation";
 
 const tempPolicy: Record<string, boolean> = {
   list: false,
@@ -210,6 +216,44 @@ const SalesQuotationsPage: MyPage<{ sessionData: ISessionData }> = ({
       type: "string",
       flex: 1,
       hide: true,
+    },
+    {
+      field: "actions",
+      type: "actions",
+      width: 80,
+      renderCell: (
+        params: GridRenderCellParams<unknown, ITransaction, unknown>
+      ) => {
+        const id = params.row.id;
+        return (
+          <CustomMenu
+            id={id}
+            menus={[
+              {
+                icon: <EditIcon />,
+                label: "Edit",
+                onClick: (params) => console.log(params),
+              },
+              {
+                icon: <FileCopyIcon />,
+                label: "Duplicate",
+                onClick: (params) => console.log(params),
+              },
+              { label: "divider" },
+              {
+                icon: <ArchiveIcon />,
+                label: "Archive",
+                onClick: (params) => console.log(params),
+              },
+              {
+                icon: <MoreHorizIcon />,
+                label: "More",
+                onClick: (params) => console.log(params),
+              },
+            ]}
+          />
+        );
+      },
     },
   ];
 

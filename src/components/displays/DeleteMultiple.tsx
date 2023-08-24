@@ -38,12 +38,12 @@ const DeleteMultiple = ({
   };
 
   useEffect(() => {
-    if (toast.message === "done") {
+    if (toast.message === "done" && path === toast.path) {
       setIsDeleting(false);
       setToast({ message: "" });
       typeof handleRefresh === "function" && handleRefresh();
     }
-  }, [toast, handleRefresh, setToast, setIsDeleting]);
+  }, [toast, handleRefresh, setToast, setIsDeleting, path]);
 
   if (ids.length === 0) return null;
 
