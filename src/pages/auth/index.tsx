@@ -150,7 +150,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // const providers = await getProviders();
 
   return {
-    props: {},
+    props: {
+      // csrfToken: csrfToken
+    },
   };
 };
 

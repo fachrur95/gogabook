@@ -5,18 +5,6 @@ import {
 import axios from "axios";
 import { z } from "zod";
 import { env } from "@/env.mjs";
-import type { ITransaction } from "@/types/transactions/trans";
-import type { InfiniteQueryResult } from "@/types/api-response";
-// import { getServerSession } from "next-auth";
-
-export const defaultUndefinedResult: InfiniteQueryResult<ITransaction> = {
-  result: [],
-  count: 0,
-  countAll: 0,
-  currentPage: 0,
-  nextPage: false,
-  totalPages: 0,
-}
 
 export const procedureRouter = createTRPCRouter({
   delete: protectedProcedure

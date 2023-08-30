@@ -11,6 +11,13 @@ import { paymentRouter } from "./routers/transactions/payment";
 import { productionRouter } from "./routers/transactions/production";
 import { transferFundRouter } from "./routers/transactions/transfer-fund";
 import { transferItemRouter } from "./routers/transactions/transfer-item";
+import { massProductionRouter } from "./routers/transactions/mass-production";
+import { stockAdjustmentRouter } from "./routers/transactions/stock-adjustment";
+import { journalEntryRouter } from "./routers/transactions/journal-entry";
+import { allTransactionRouter } from "./routers/transactions/all-transaction";
+import { masterItemRouter } from "./routers/masters/item";
+import { masterItemCategoryRouter } from "./routers/masters/itemCategory";
+import { masterItemTypeRouter } from "./routers/masters/itemType";
 
 /**
  * This is the primary router for your server.
@@ -21,15 +28,27 @@ export const appRouter = createTRPCRouter({
   credentialBusiness: credentialBusinessRouter,
   credentialPrivilege: credentialPrivilegeRouter,
   credentialStore: credentialStoreRouter,
-  generalSettings: generalSettingRouter,
-  menuRole: menuRoleRouter,
   procedure: procedureRouter,
+  // transactions path =================================================================
   salesPurchase: salesPurchaseRouter,
   liability: liabilityRouter,
   payment: paymentRouter,
   production: productionRouter,
   transferFund: transferFundRouter,
   transferItem: transferItemRouter,
+  massProduction: massProductionRouter,
+  stockAdjustment: stockAdjustmentRouter,
+  journalEntry: journalEntryRouter,
+  allTransaction: allTransactionRouter,
+
+  // masters path ======================================================================
+  masterItem: masterItemRouter,
+  masterItemCategory: masterItemCategoryRouter,
+  masterItemType: masterItemTypeRouter,
+
+  // settings path =====================================================================
+  generalSettings: generalSettingRouter,
+  menuRole: menuRoleRouter,
 })
 
 // export type definition of API

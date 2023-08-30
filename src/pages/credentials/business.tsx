@@ -70,7 +70,7 @@ const CredentialBusinessPage: MyPage = () => {
       {
         onError: (err) => console.log(err),
         onSuccess: async (data) => {
-          console.log(data);
+          // console.log(data);
           if (!data) {
             return void setOpenNotification("Error to set business");
           }

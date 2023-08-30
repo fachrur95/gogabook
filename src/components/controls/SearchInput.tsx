@@ -61,7 +61,6 @@ const SearchInput = () => {
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
-        // value={searchText ?? ""}
         onChange={debouncedSearch}
         placeholder="Search…"
         inputProps={{

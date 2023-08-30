@@ -21,12 +21,12 @@ const themeList = [
   },
   {
     id: "light",
-    label: "Terang",
+    label: "Light",
     icon: <LightMode />,
   },
   {
     id: "dark",
-    label: "Gelap",
+    label: "Dark",
     icon: <DarkMode />,
   },
 ];

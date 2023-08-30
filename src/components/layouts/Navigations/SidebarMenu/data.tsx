@@ -214,7 +214,7 @@ const data: DataMenuType[] = [
         url: "/cashandbank/cheques",
         icon: <LocalActivityOutlined fontSize="small" />,
         children: [
-          {
+          /* {
             id: "cheques-customer",
             label: "customer",
             depth: 2,
@@ -229,7 +229,7 @@ const data: DataMenuType[] = [
             url: "/cashandbank/cheques/cheques-supplier",
             icon: <CircleOutlined fontSize="small" />,
             children: [],
-          },
+          }, */
         ],
       },
       {
@@ -251,7 +251,7 @@ const data: DataMenuType[] = [
     children: [
       {
         id: "assemble",
-        label: "assemble",
+        label: "assembly",
         depth: 1,
         url: "/productions/assemble",
         icon: (
@@ -261,7 +261,7 @@ const data: DataMenuType[] = [
           />
         ),
         children: [
-          {
+          /* {
             id: "assembly-quote",
             label: "quote",
             depth: 2,
@@ -292,12 +292,12 @@ const data: DataMenuType[] = [
             url: "/productions/assemble/assembly-mass-direct",
             icon: <CircleOutlined fontSize="small" />,
             children: [],
-          },
+          }, */
         ],
       },
       {
         id: "disassemble",
-        label: "disassemble",
+        label: "disassembly",
         depth: 1,
         url: "/productions/disassemble",
         icon: (
@@ -307,7 +307,7 @@ const data: DataMenuType[] = [
           />
         ),
         children: [
-          {
+          /* {
             id: "disassembly-quote",
             label: "quote",
             depth: 2,
@@ -330,7 +330,7 @@ const data: DataMenuType[] = [
             url: "/productions/disassemble/disassembly-direct",
             icon: <CircleOutlined fontSize="small" />,
             children: [],
-          },
+          }, */
         ],
       },
     ],
@@ -349,7 +349,7 @@ const data: DataMenuType[] = [
         url: "/inventories/stock-opname",
         icon: <ProductionQuantityLimits fontSize="small" />,
         children: [
-          {
+          /* {
             id: "stock-instruction",
             label: "quote",
             depth: 2,
@@ -372,7 +372,7 @@ const data: DataMenuType[] = [
             url: "/inventories/stock-opname/stock-adjustments",
             icon: <CircleOutlined fontSize="small" />,
             children: [],
-          },
+          }, */
         ],
       },
       {
@@ -382,7 +382,7 @@ const data: DataMenuType[] = [
         url: "/inventories/transfer-item",
         icon: <CompareArrowsOutlined fontSize="small" />,
         children: [
-          {
+          /* {
             id: "transfer-item-quote",
             label: "quote",
             depth: 2,
@@ -405,7 +405,7 @@ const data: DataMenuType[] = [
             url: "/inventories/transfer-item/transfer-item-direct",
             icon: <CircleOutlined fontSize="small" />,
             children: [],
-          },
+          }, */
         ],
       },
     ],

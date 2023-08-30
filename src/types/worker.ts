@@ -37,6 +37,14 @@ export type WorkerPathType =
   | "transfer-item-order"
   | "transfer-item-direct"
   | "transfer-funds"
+  | "assembly-mass-quote"
+  | "assembly-mass-order"
+  | "assembly-mass-direct"
+  | "stock-adjustments"
+  | "stock-instructions"
+  | "opname-counts"
+  | "journal-entry"
+  | "all-trans"
   ;
 
 export type DeleteWorkerEventType = {
