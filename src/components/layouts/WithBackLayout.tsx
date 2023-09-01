@@ -7,13 +7,13 @@ const WithBackLayout = (props: PropsWithChildren) => {
     <div className="flex flex-col">
       <BackHeader />
       <Box
-        className="flex-grow overflow-y-auto"
-        sx={{
+        className="mt-16 flex-grow overflow-y-auto"
+        /* sx={{
           bgcolor: (theme) =>
             theme.palette.mode === "light"
               ? theme.palette.grey.A200
               : theme.palette.background.default,
-        }}
+        }} */
       >
         {props.children}
       </Box>

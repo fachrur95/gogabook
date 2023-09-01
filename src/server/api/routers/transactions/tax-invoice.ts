@@ -36,7 +36,7 @@ export const taxInvoiceRouter = createTRPCRouter({
     const { type, limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<ITransaction>>(
-      `${env.BACKEND_URL}/api/core/faktur/${type}?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
+      `${env.BACKEND_URL}/api/core/faktur/${type}?page=${cursor ?? 0}&size=${limit}${q ? `&q=${q}` : ""}${filter ? `&filter=${filter}` : ""}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;
@@ -64,7 +64,7 @@ export const taxInvoiceRouter = createTRPCRouter({
     const { limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<ITransaction>>(
-      `${env.BACKEND_URL}/api/core/faktur/trans-filled?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
+      `${env.BACKEND_URL}/api/core/faktur/trans-filled?page=${cursor ?? 0}&size=${limit}${q ? `&q=${q}` : ""}${filter ? `&filter=${filter}` : ""}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;

@@ -2,6 +2,7 @@ import type { IBusiness } from "@/types/cores/business";
 import type { IPlatform } from "@/types/cores/platform";
 import type { IMasterOther } from "../masterOther";
 import type { IMasterItemCategory } from "./masterItemCategory";
+import type { IMasterItemUom } from "./masterItemUom";
 
 export interface IMasterItem {
   id: string;
@@ -32,6 +33,7 @@ export interface IMasterItem {
   masterbussiness?: IBusiness | null;
   masterplatform?: IPlatform | null;
   item_variant?: IMasterItem[];
+  multiple_uom?: IMasterItemUom[];
   masteritemcategory?: IMasterItemCategory | null;
   item_tax?: IMasterOther | null;
   item_uom?: IMasterOther | null;
@@ -39,3 +41,5 @@ export interface IMasterItem {
   description?: string | null;
   title?: string | null;
 }
+
+export type MasterItemType = "stock" | "sales" | "purchase" | "assembly" | "disassembly" | "transfer" | "beginningbalance" | "adjustment" | "formula" | "component" | "seconduom" | "autoassembly" | "modifier";

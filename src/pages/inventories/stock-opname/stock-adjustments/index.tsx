@@ -299,10 +299,6 @@ const StockOpanameAdjustmentsPage: MyPage<{ sessionData: ISessionData }> = ({
             columns={columns}
             rows={rows}
             rowCount={countAll}
-            /* onRowsScrollEnd={(params, params2, params3) => {
-              console.log({ params, params2, params3 });
-              fetchNextPage as DataGridProProps["onRowsScrollEnd"];
-            }} */
             onRowsScrollEnd={() => hasNextPage && fetchNextPage()}
             filterMode="server"
             sortingMode="server"

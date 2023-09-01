@@ -35,7 +35,7 @@ export const masterRecipeRouter = createTRPCRouter({
     const { limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<IMasterRecipe>>(
-      `${env.BACKEND_URL}/api/core/recipes?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
+      `${env.BACKEND_URL}/api/core/recipes?page=${cursor ?? 0}&size=${limit}${q ? `&q=${q}` : ""}${filter ? `&filter=${filter}` : ""}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;

@@ -43,7 +43,7 @@ export const productionRouter = createTRPCRouter({
     const { type, limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<ITransaction>>(
-      `${env.BACKEND_URL}/api/core/productions/${type}?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
+      `${env.BACKEND_URL}/api/core/productions/${type}?page=${cursor ?? 0}&size=${limit}${q ? `&q=${q}` : ""}${filter ? `&filter=${filter}` : ""}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;

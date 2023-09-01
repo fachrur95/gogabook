@@ -15,8 +15,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import Done from "@mui/icons-material/Done";
 import Close from "@mui/icons-material/Close";
+import Add from "@mui/icons-material/Add";
 import {
   Box,
+  Button,
   Chip,
   IconButton,
   Link as MuiLink,
@@ -42,11 +44,15 @@ import { useEffect, useState } from "react";
 import CustomMenu from "@/components/displays/StyledMenu";
 import type { WorkerPathType } from "@/types/worker";
 import type { IMasterItem } from "@/types/masters/masterItem";
+import NavTabs from "@/components/tabs";
+import { itemsTabs } from "@/components/tabs/data";
 
-const sortDefault: GridSortModel = [{ field: "trans_entrydate", sort: "desc" }];
+const sortDefault: GridSortModel = [
+  { field: "masteritem_description", sort: "asc" },
+];
 
-const title = "Transfer Funds";
-const path: WorkerPathType = "transfer-funds";
+const title = "Master Item";
+const path: WorkerPathType = "items";
 
 const tempPolicy: Record<string, boolean> = {
   list: false,
@@ -101,7 +107,7 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
 
   const columns: GridColDef[] = [
     {
-      field: "trans_text",
+      field: "masteritem_description",
       headerName: "Code",
       flex: 1,
       renderCell: (
@@ -175,7 +181,7 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
       ),
     },
     {
-      field: "trans_oleh",
+      field: "masteritem_oleh",
       headerName: "Oleh",
       type: "string",
       flex: 1,
@@ -298,6 +304,7 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Box className="flex flex-col gap-2">
+        <NavTabs data={itemsTabs} />
         <Box
           component={Paper}
           elevation={4}
@@ -317,18 +324,19 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
               <IconButton onClick={() => void refetch()}>
                 <Refresh />
               </IconButton>
+              <Link href="/masters/products/items/form">
+                <Button variant="contained" endIcon={<Add />}>
+                  Create New
+                </Button>
+              </Link>
             </div>
           </Box>
           <DataGridProAdv
-            height="79vh"
+            height="73vh"
             loading={isFetching}
             columns={columns}
             rows={rows}
             rowCount={countAll}
-            /* onRowsScrollEnd={(params, params2, params3) => {
-              console.log({ params, params2, params3 });
-              fetchNextPage as DataGridProProps["onRowsScrollEnd"];
-            }} */
             onRowsScrollEnd={() => hasNextPage && fetchNextPage()}
             filterMode="server"
             sortingMode="server"

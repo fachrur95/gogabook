@@ -45,6 +45,16 @@ export type WorkerPathType =
   | "opname-counts"
   | "journal-entry"
   | "all-trans"
+  | "items"
+  | "itemsitemcategory"
+  | "itemtype"
+  | "uom"
+  | "brand"
+  | "bom"
+  | "term"
+  | "exchange"
+  | "expedition"
+  | "tax"
   ;
 
 export type DeleteWorkerEventType = {

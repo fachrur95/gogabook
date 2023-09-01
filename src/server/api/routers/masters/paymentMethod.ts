@@ -35,7 +35,7 @@ export const masterPaymentMethodRouter = createTRPCRouter({
     const { limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<IMasterPayment>>(
-      `${env.BACKEND_URL}/api/core/payment-methods?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
+      `${env.BACKEND_URL}/api/core/payment-methods?page=${cursor ?? 0}&size=${limit}${q ? `&q=${q}` : ""}${filter ? `&filter=${filter}` : ""}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;

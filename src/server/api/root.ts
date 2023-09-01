@@ -18,6 +18,8 @@ import { allTransactionRouter } from "./routers/transactions/all-transaction";
 import { masterItemRouter } from "./routers/masters/item";
 import { masterItemCategoryRouter } from "./routers/masters/itemCategory";
 import { masterItemTypeRouter } from "./routers/masters/itemType";
+import { masterOtherRouter } from "./routers/masters/other";
+import { masterRecipeRouter } from "./routers/masters/recipe";
 
 /**
  * This is the primary router for your server.
@@ -45,6 +47,8 @@ export const appRouter = createTRPCRouter({
   masterItem: masterItemRouter,
   masterItemCategory: masterItemCategoryRouter,
   masterItemType: masterItemTypeRouter,
+  masterOther: masterOtherRouter,
+  masterRecipe: masterRecipeRouter,
 
   // settings path =====================================================================
   generalSettings: generalSettingRouter,

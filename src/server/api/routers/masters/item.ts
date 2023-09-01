@@ -21,6 +21,21 @@ export const defaultUndefinedResult: InfiniteQueryResult<IMasterItem> = {
 export const masterItemRouter = createTRPCRouter({
   getAll: protectedProcedure.input(
     z.object({
+      type: z.enum([
+        "stock",
+        "sales",
+        "purchase",
+        "assembly",
+        "disassembly",
+        "transfer",
+        "beginningbalance",
+        "adjustment",
+        "formula",
+        "component",
+        "seconduom",
+        "autoassembly",
+        "modifier",
+      ]).optional(),
       limit: z.number(),
       cursor: z.union([z.string(), z.number()]).nullish(),
       q: z.string().nullish(),
@@ -32,10 +47,10 @@ export const masterItemRouter = createTRPCRouter({
       show: z.enum(["all", "active", "inactive"]).default("all"),
     }),
   ).query(async ({ ctx, input }) => {
-    const { limit, cursor, q, filter } = input;
+    const { type, limit, cursor, q, filter } = input;
 
     const result = await axios.get<InfiniteQueryResult<IMasterItem>>(
-      `${env.BACKEND_URL}/api/core/items?page=${cursor ?? 0}&size=${limit}&q=${q}&filter=${filter}`,
+      `${env.BACKEND_URL}/api/core/items?page=${cursor ?? 0}&size=${limit}${q ? `&q=${q}` : ""}${filter ? `&filter=${filter}` : ""}${type ? `&type=${type}` : ""}`,
       { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
     ).then((response) => {
       return response.data;

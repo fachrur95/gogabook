@@ -93,3 +93,69 @@ export const stockAdjustmentTabs: IDataTab[] = [
     url: "/inventories/stock-opname/stock-adjustments",
   },
 ];
+
+export const itemsTabs: IDataTab[] = [
+  {
+    id: "item",
+    label: "Item",
+    url: "/masters/products/items",
+  },
+  {
+    id: "item-category",
+    label: "Category",
+    url: "/masters/products/item-categories",
+  },
+  {
+    id: "bom",
+    label: "Recipe",
+    url: "/masters/products/bill-of-materials",
+  },
+  {
+    id: "uom",
+    label: "Unit",
+    url: "/masters/products/unit-of-measures",
+  },
+  {
+    id: "item-type",
+    label: "Type",
+    url: "/masters/products/item-types",
+  },
+  {
+    id: "brand",
+    label: "Brand",
+    url: "/masters/products/brands",
+  },
+];
+
+export const salesPurchaseTabs: IDataTab[] = [
+  {
+    id: "expedition",
+    label: "Expedition",
+    url: "/masters/sales-purchases/expeditions",
+  },
+  {
+    id: "currency",
+    label: "Currency",
+    url: "/masters/sales-purchases/currencies",
+  },
+  {
+    id: "tax",
+    label: "Tax",
+    url: "/masters/sales-purchases/taxes",
+  },
+  {
+    id: "credit-term",
+    label: "Credit Term",
+    url: "/masters/sales-purchases/credit-terms",
+  },
+  {
+    id: "payment-method",
+    label: "Payment Method",
+    url: "/masters/sales-purchases/payment-methods",
+  },
+  {
+    id: "sales-commission",
+    label: "Commission",
+    url: "/masters/sales-purchases/sales-commissions",
+  },
+];

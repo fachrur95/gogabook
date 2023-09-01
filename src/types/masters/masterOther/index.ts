@@ -28,6 +28,8 @@ export interface IMasterOther {
   title?: string | null;
 }
 
+export type MasterOtherType = | "brand" | "packaging" | "expedition" | "reason" | "position" | "term" | "uom" | "tax" | "exchange" | "store" | "usercategory";
+
 /* ===============================================
   ENUM OF MASTER OTHER TABLE
   1 brand
