@@ -1,11 +1,22 @@
 import Dialog, { type DialogProps } from "@mui/material/Dialog";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { type FC } from "react";
+import { forwardRef, type FC } from "react";
+import Slide from "@mui/material/Slide";
+import type { TransitionProps } from "@mui/material/transitions";
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 interface ModalTransitionProps extends DialogProps {
   open: boolean;
-  children: React.ReactNode;
   handleClose?: () => void;
   // width?: number;
 }
@@ -24,6 +35,7 @@ const ModalTransition: FC<ModalTransitionProps> = ({
       fullScreen={fullScreen}
       open={open}
       onClose={handleClose}
+      TransitionComponent={Transition}
       {...props}
     >
       {children}

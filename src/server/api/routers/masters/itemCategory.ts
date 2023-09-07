@@ -47,6 +47,16 @@ export const masterItemCategoryRouter = createTRPCRouter({
     return result;
   }),
 
+  getUnique: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input: { id } }) => axios.get<IMasterItemCategory>(
+    `${env.BACKEND_URL}/api/core/itemcategories/${id}`,
+    { headers: { Authorization: `Bearer ${ctx.session.accessToken}` } }
+  ).then((response) => {
+    return response.data;
+  }).catch((err) => {
+    console.log(err)
+    return undefined;
+  })),
+
   /* getUnique: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
     return ctx.prisma.business.findUnique({
       where: {

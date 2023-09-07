@@ -20,6 +20,8 @@ import {
   Box,
   Button,
   Chip,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Link as MuiLink,
   Paper,
@@ -46,6 +48,9 @@ import type { WorkerPathType } from "@/types/worker";
 import type { IMasterItem } from "@/types/masters/masterItem";
 import NavTabs from "@/components/tabs";
 import { itemsTabs } from "@/components/tabs/data";
+import { useRouter } from "next/router";
+import ModalTransition from "@/components/dialogs/ModalTransition";
+import MasterItemForm from "@/components/forms/MasterItemForm";
 
 const sortDefault: GridSortModel = [
   { field: "masteritem_description", sort: "asc" },
@@ -65,6 +70,7 @@ const tempPolicy: Record<string, boolean> = {
 const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
   sessionData,
 }) => {
+  const router = useRouter();
   const { data: menuRoles } = useMenuRole();
   const [rows, setRows] = useState<IMasterItem[]>([]);
   const [policies, setPolicies] = useState<Record<string, boolean>>(tempPolicy);
@@ -119,10 +125,12 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
         }
         return (
           <Link
-            href={{
-              pathname: "/form/[[...slug]]",
-              query: { slug: [params.row.id, "view"] },
-            }}
+            // href={{
+            //   pathname: "/form/[[...slug]]",
+            //   query: { slug: [params.row.id, "view"] },
+            // }}
+            href={`/masters/products/items/?slug=${params.row.id}`}
+            as={`/masters/products/items/${params.row.id}`}
           >
             <MuiLink component="button">{display}</MuiLink>
           </Link>
@@ -324,7 +332,10 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
               <IconButton onClick={() => void refetch()}>
                 <Refresh />
               </IconButton>
-              <Link href="/masters/products/items/form">
+              <Link
+                href="/masters/products/items/?slug=form"
+                as="/masters/products/items/form"
+              >
                 <Button variant="contained" endIcon={<Add />}>
                   Create New
                 </Button>
@@ -348,6 +359,18 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
             checkboxSelection
             disableSelectionOnClick
           />
+          {router.query.slug && (
+            <ModalTransition
+              open
+              handleClose={router.back}
+              maxWidth="lg"
+              fullWidth
+            >
+              <DialogContent>
+                <MasterItemForm slug={router.query.slug as string} />
+              </DialogContent>
+            </ModalTransition>
+          )}
         </Box>
       </Box>
     </>
