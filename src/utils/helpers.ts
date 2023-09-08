@@ -35,7 +35,8 @@ export const formatCurrency = (value: number): string => FormatCurrency.format(v
 
 export const formatNumber = (value: number): string => FormatNumber.format(value);
 
-export const isJson = (str: string): boolean => {
+export const isJson = (str: string | null): boolean => {
+  if (!str) return false;
   try {
     JSON.parse(str);
   } catch (e) {

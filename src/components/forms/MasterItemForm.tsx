@@ -40,6 +40,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import fastCartesian from "fast-cartesian";
+import { isJson } from "@/utils/helpers";
 
 type MultipleUnitType = {
   id?: string;
@@ -255,8 +256,33 @@ const MasterItemForm = (props: IMasterItemForm) => {
 
   useEffect(() => {
     if (dataSelected) {
+      const variantNames: string[] =
+        isJson(dataSelected.masteritem_variantparent) &&
+        dataSelected.masteritem_variantparent
+          ? (JSON.parse(dataSelected.masteritem_variantparent) as string[])
+          : [];
+      const variantValues: string[][] =
+        isJson(dataSelected.masteritem_variantcontent) &&
+        dataSelected.masteritem_variantcontent
+          ? (JSON.parse(dataSelected.masteritem_variantcontent) as string[][])
+          : [];
+
+      const dataVariantCategory: VariantCoreType[] = variantNames.map(
+        (variantName, index) => ({
+          name: variantName,
+          values: variantValues?.[index] ?? [],
+        })
+      );
+
+      setValue("variantCategories", dataVariantCategory);
       for (const key in dataSelected) {
         if (Object.prototype.hasOwnProperty.call(dataSelected, key)) {
+          if (
+            key === "masteritem_variantparent" ||
+            key === "masteritem_variantcontent"
+          )
+            continue;
+
           if (key === "masteritemcategory") {
             setValue("masteritemcategory", {
               // ...dataSelected.masteritemcategory,
@@ -310,6 +336,36 @@ const MasterItemForm = (props: IMasterItemForm) => {
             setValue("multiple_uom", dataAppend);
             continue;
           }
+          if (key === "masteritem_isvariant") {
+            setValue("isVariant", dataSelected[key] === "Y");
+            continue;
+          }
+          if (key === "item_variant") {
+            const dataVariants: VariantResultType[] = (
+              dataSelected[key]?.map(
+                (variant) =>
+                  variant.multiple_uom?.map((element) => ({
+                    id: element.masteritemuom_id,
+                    unit: {
+                      id: element.masteruom_id,
+                      label:
+                        element.itemuom_uom?.masterother_description ?? "-",
+                      convertionqty: element.masteritemuom_convertionqty,
+                      barcode: element.masteritemuom_barcode,
+                    },
+                    description:
+                      variant.masteritem_description.split(
+                        `${dataSelected.masteritem_description}-`
+                      )?.[1] ?? "-",
+                    barcode: element.masteritemuom_barcode ?? "",
+                    price: variant.masteritem_priceinputdefault,
+                  })) ?? []
+              ) ?? []
+            ).flat();
+            setValue("variants", dataVariants);
+            continue;
+          }
+
           setValue(
             key as keyof Partial<MasterItemBodyType>,
             dataSelected[
