@@ -10,8 +10,12 @@ const ImageLayout = (props: PropsWithChildren) => {
         alt="imageBackground"
         loading="lazy"
         fill
-        style={{ objectFit: "cover" }}
         className="-z-10"
+        style={{
+          objectFit: "cover",
+          // maxWidth: "100%",
+          // height: "auto",
+        }}
       />
       <Toolbar id="back-to-top-anchor" />
       {props.children}

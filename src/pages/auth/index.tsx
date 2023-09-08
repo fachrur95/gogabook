@@ -65,12 +65,14 @@ const AuthLoginPage: MyPage = () => {
             <Image
               alt="Logo"
               src="/img/logo-text.png"
-              layout="intrinsic"
-              objectFit="cover"
               quality={100}
               width={200}
               height={100}
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+                objectFit: "cover"
+              }} />
             <Box
               sx={{
                 display: "flex",

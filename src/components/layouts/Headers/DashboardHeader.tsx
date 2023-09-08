@@ -146,6 +146,10 @@ const DashboardHeader = (props: HeaderProps) => {
               loading="lazy"
               width={163}
               height={49}
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+              }}
             />
           </div>
           {/* <SearchInput /> */}

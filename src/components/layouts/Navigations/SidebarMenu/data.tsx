@@ -35,6 +35,9 @@ import ShoppingCartOutlined from "@mui/icons-material/ShoppingCartOutlined";
 import StorageOutlined from "@mui/icons-material/StorageOutlined";
 import StorefrontOutlined from "@mui/icons-material/StorefrontOutlined";
 import Undo from "@mui/icons-material/Undo";
+import Groups from "@mui/icons-material/Groups";
+import Diversity3 from "@mui/icons-material/Diversity3";
+import Diversity2 from "@mui/icons-material/Diversity2";
 
 export type DataMenuType = {
   id: string;
@@ -488,13 +491,38 @@ const data: DataMenuType[] = [
         depth: 1,
         url: "/masters/contacts",
         icon: <ContactsOutlined fontSize="small" />,
-        children: [],
+        children: [
+          {
+            id: "contact-customer",
+            label: "Pelanggan",
+            depth: 2,
+            url: "/masters/contacts/customers",
+            icon: <Groups fontSize="small" />,
+            children: [],
+          },
+          {
+            id: "contact-supplier",
+            label: "Pemasok",
+            depth: 2,
+            url: "/masters/contacts/suppliers",
+            icon: <Diversity3 fontSize="small" />,
+            children: [],
+          },
+          {
+            id: "contact-employee",
+            label: "Karyawan",
+            depth: 2,
+            url: "/masters/contacts/employees",
+            icon: <Diversity2 fontSize="small" />,
+            children: [],
+          },
+        ],
       },
       {
         id: "accountings",
         label: "accountings",
         depth: 1,
-        url: "/masterss",
+        url: "/masters/accountings",
         icon: <FormatListNumberedOutlined fontSize="small" />,
         children: [],
       },
