@@ -35,9 +35,11 @@ const AutocompleteMasterItem = <TFieldValues extends FieldValues>(
       options={optionsItemCategory}
       loading={isFetchingItemCategory}
       textFieldProps={{
+        ...rest.textFieldProps,
         onChange: onSearchItemCategory,
       }}
       autocompleteProps={{
+        ...rest.autocompleteProps,
         onClose: () => onSearchItemCategory(),
         renderOption: renderOptionItemCategory,
         disableClearable: rest.required,

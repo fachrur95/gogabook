@@ -1,28 +1,82 @@
 import type { IMasterItem } from "@/types/masters/masterItem";
 import type { IDataOption } from "@/types/options";
-import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Paper,
+  TableFooter,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
+  AutocompleteElement,
   CheckboxElement,
-  // AutocompleteElement,
   FormContainer,
   RadioButtonGroup,
   // SelectElement,
   SwitchElement,
   TextFieldElement,
   TextareaAutosizeElement,
-  // useFieldArray,
+  useFieldArray,
   useForm,
 } from "react-hook-form-mui";
 import Close from "@mui/icons-material/Close";
+import Add from "@mui/icons-material/Add";
+import Delete from "@mui/icons-material/Delete";
 import AutocompleteMasterItemCategory from "../controls/autocompletes/masters/AutocompleteMasterItemCategory";
 import AutocompleteMasterOther from "../controls/autocompletes/masters/AutocompleteMasterOther";
 import NumericFormatCustom from "../controls/NumericFormatCustom";
 import Collapse from "@mui/material/Collapse";
 import { api } from "@/utils/api";
 import Link from "next/link";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import fastCartesian from "fast-cartesian";
 
-type MasterItemBodyType = Partial<IMasterItem> & {
+type MultipleUnitType = {
+  id?: string;
+  item_uom: IDataOption | null;
+  masteritemuom_convertionqty: number;
+  masteritemuom_barcode: string;
+};
+
+type VariantCoreType = {
+  id?: string;
+  name: string;
+  values: string[];
+};
+
+type VariantResultType = {
+  id?: string;
+  unit: IDataOption & { convertionqty: number; barcode?: string | null };
+  description: string;
+  barcode: string;
+  price: number;
+};
+
+type MasterItemBodyType = Pick<
+  IMasterItem,
+  | "masteritem_qtysellmin"
+  | "masteritem_qtysellmax"
+  | "masteritem_priceinputdefault"
+  | "masteritem_description"
+  | "masteritem_alias"
+  | "masteritem_catatan"
+  | "masteritem_barcode"
+  | "masteritem_isserialbatch"
+  | "masteritem_stockmin"
+  | "masteritem_stockmax"
+  | "masteritem_oleh"
+  | "masteritem_active"
+> & {
   masteritemcategory: IDataOption | null;
   item_brand: IDataOption | null;
   item_tax: IDataOption | null;
@@ -38,14 +92,11 @@ type MasterItemBodyType = Partial<IMasterItem> & {
   formula: boolean;
   material: boolean;
   modify: boolean;
-  isserialbatch: "N" | "S" | "B";
-  stockmin: number;
-  stockmax: number;
-  qtysellmin: number;
-  qtysellmax: number;
-  sales_price: number;
   isMultipleUnit: boolean;
-  masteritem_active: boolean;
+  isVariant: boolean;
+  multiple_uom: MultipleUnitType[];
+  variantCategories: VariantCoreType[];
+  variants: VariantResultType[];
 };
 
 const defaultValues: MasterItemBodyType = {
@@ -64,13 +115,23 @@ const defaultValues: MasterItemBodyType = {
   formula: false,
   material: false,
   modify: false,
-  isserialbatch: "N",
-  stockmin: 0,
-  stockmax: 0,
-  qtysellmin: 0,
-  qtysellmax: 0,
-  sales_price: 0,
+
+  masteritem_description: "",
+  masteritem_alias: "",
+  masteritem_catatan: "",
+  masteritem_barcode: "",
+  masteritem_oleh: "",
+  masteritem_isserialbatch: "N",
+  masteritem_stockmin: 0,
+  masteritem_stockmax: 0,
+  masteritem_qtysellmin: 0,
+  masteritem_qtysellmax: 0,
+  masteritem_priceinputdefault: 0,
   isMultipleUnit: false,
+  isVariant: false,
+  multiple_uom: [],
+  variantCategories: [],
+  variants: [],
   masteritem_active: true,
 };
 
@@ -86,29 +147,101 @@ const MasterItemForm = (props: IMasterItemForm) => {
   // console.log({ id });
 
   const {
-    // control,
+    control,
     setValue,
-    // getValues,
+    getValues,
     formState: { isSubmitting },
-    reset,
+    // reset,
     // setError,
     watch,
   } = formContext;
 
-  const selectedCategory = watch("itemcategory");
+  const {
+    fields: fieldsUnit,
+    append: appendUnit,
+    remove: removeUnit,
+  } = useFieldArray({
+    control,
+    name: "multiple_uom",
+  });
 
-  const { data: dataSelected } = api.masterItem.getUnique.useQuery(
-    { id: selectedId ?? "" },
-    { enabled: !!selectedId }
-  );
+  const {
+    fields: fieldsVariantCategory,
+    append: appendVariantCategory,
+    remove: removeVariantCategory,
+  } = useFieldArray({
+    control,
+    name: "variantCategories",
+  });
 
-  console.log({ selectedCategory });
-  console.log({ dataSelected });
+  const { fields: fieldsVariant } = useFieldArray({
+    control,
+    name: "variants",
+  });
+
+  const selectedCategory = watch("masteritemcategory");
+  const selectedUnitBase = watch("item_uom");
+  // const currentVariantCategory = watch("variantCategories");
+  // const currentVariants = watch("variants");
+
+  const { data: dataSelected, isFetching: isFetchingSelected } =
+    api.masterItem.getUnique.useQuery(
+      { id: selectedId ?? "" },
+      { enabled: !!selectedId, refetchOnWindowFocus: false }
+    );
 
   const { data: dataCategory } = api.masterItemCategory.getUnique.useQuery(
     { id: selectedCategory?.id ?? "" },
     { enabled: !!selectedCategory }
   );
+
+  const handleRenderVariants = (): void => {
+    const variantCategories = getValues("variantCategories");
+    // const variantsOld = getValues("variants");
+    const multiUnit = watch("isMultipleUnit") ? getValues("multiple_uom") : [];
+
+    const allUnit = selectedUnitBase
+      ? [
+          {
+            id: selectedUnitBase.id,
+            label: selectedUnitBase.label,
+            convertionqty: 1,
+            barcode: "",
+          },
+        ]
+      : [];
+
+    for (const unit of multiUnit) {
+      if (unit.item_uom) {
+        allUnit.push({
+          id: unit.item_uom.id,
+          label: unit.item_uom.label,
+          convertionqty: unit.masteritemuom_convertionqty,
+          barcode: unit.masteritemuom_barcode,
+        });
+      }
+    }
+
+    const values = variantCategories.map(
+      (variantCategory) => variantCategory.values
+    );
+    const cartesianValues = fastCartesian(values);
+    // const cartesianResult = fastCartesian([...allUnit, ...cartesianValues]);
+    const cartesianResult: VariantResultType[] = allUnit
+      .map((unit) => {
+        const result: VariantResultType[] = cartesianValues.map((value) => ({
+          unit,
+          description: value.join(" "),
+          barcode: unit.barcode,
+          price: 0,
+        }));
+        return result;
+      })
+      .flat();
+    console.log({ cartesianResult });
+
+    setValue("variants", cartesianResult);
+  };
 
   const onSubmit = (data: MasterItemBodyType) => {
     console.log({ data });
@@ -126,6 +259,7 @@ const MasterItemForm = (props: IMasterItemForm) => {
         if (Object.prototype.hasOwnProperty.call(dataSelected, key)) {
           if (key === "masteritemcategory") {
             setValue("masteritemcategory", {
+              // ...dataSelected.masteritemcategory,
               id: dataSelected.masteritemcategory?.masteritemcategory_id ?? "-",
               label:
                 dataSelected.masteritemcategory
@@ -157,24 +291,42 @@ const MasterItemForm = (props: IMasterItemForm) => {
             });
             continue;
           }
+          if (key === "multiple_uom") {
+            const dataAppend = dataSelected[key]
+              ?.filter((el) => el.masteritemuom_convertionqty > 1)
+              .map((obj) => ({
+                masteritemuom_convertionqty:
+                  obj.masteritemuom_convertionqty ?? 0,
+                masteritemuom_barcode: obj.masteritemuom_barcode ?? "",
+                item_uom: {
+                  id: obj.itemuom_uom?.masterother_id ?? "-",
+                  label: obj.itemuom_uom?.masterother_description ?? "-",
+                },
+              }));
+            if (!dataAppend) continue;
+            if (dataAppend.length > 0) {
+              setValue("isMultipleUnit", true);
+            }
+            setValue("multiple_uom", dataAppend);
+            continue;
+          }
           setValue(
             key as keyof Partial<MasterItemBodyType>,
             dataSelected[
-              key as keyof Partial<
-                Omit<
-                  MasterItemBodyType,
-                  | "stock"
-                  | "sales"
-                  | "purchase"
-                  | "assembly"
-                  | "disassembly"
-                  | "transfer"
-                  | "beginBalance"
-                  | "adjust"
-                  | "formula"
-                  | "material"
-                  | "modify"
-                >
+              key as keyof Pick<
+                MasterItemBodyType,
+                | "masteritem_qtysellmin"
+                | "masteritem_qtysellmax"
+                | "masteritem_priceinputdefault"
+                | "masteritem_description"
+                | "masteritem_alias"
+                | "masteritem_catatan"
+                | "masteritem_barcode"
+                | "masteritem_isserialbatch"
+                | "masteritem_stockmin"
+                | "masteritem_stockmax"
+                | "masteritem_oleh"
+                | "masteritem_active"
               >
             ]
           );
@@ -234,6 +386,12 @@ const MasterItemForm = (props: IMasterItemForm) => {
 
   return (
     <>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetchingSelected}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="mb-2 flex items-center gap-2">
         <Link href="/masters/products/items">
           <IconButton>
@@ -299,6 +457,9 @@ const MasterItemForm = (props: IMasterItemForm) => {
               label="Unit of measurement"
               required
               type="uom"
+              textFieldProps={{
+                onBlur: handleRenderVariants,
+              }}
             />
             <AutocompleteMasterOther
               name="item_tax"
@@ -308,7 +469,7 @@ const MasterItemForm = (props: IMasterItemForm) => {
             />
             <RadioButtonGroup
               label="Serial/ Batch"
-              name="isserialbatch"
+              name="masteritem_isserialbatch"
               options={[
                 {
                   id: "N",
@@ -331,9 +492,9 @@ const MasterItemForm = (props: IMasterItemForm) => {
               label="Brand"
               type="brand"
             />
-            <TextFieldElement name="barcode" label="Barcode" />
+            <TextFieldElement name="masteritem_barcode" label="Barcode" />
             <TextFieldElement
-              name="sales_price"
+              name="masteritem_priceinputdefault"
               label="Default Price"
               InputProps={{
                 inputComponent: NumericFormatCustom as never,
@@ -345,21 +506,21 @@ const MasterItemForm = (props: IMasterItemForm) => {
             className="grid grid-cols-1 gap-4 p-4 md:grid-cols-3"
           >
             <TextFieldElement
-              name="stockmin"
+              name="masteritem_stockmin"
               label="Minimum Stock"
               InputProps={{
                 inputComponent: NumericFormatCustom as never,
               }}
             />
             <TextFieldElement
-              name="stockmax"
+              name="masteritem_stockmax"
               label="Maximum Stock"
               InputProps={{
                 inputComponent: NumericFormatCustom as never,
               }}
             />
             <TextFieldElement
-              name="qtysellmin"
+              name="masteritem_qtysellmin"
               label="Minimum Sales Qty"
               className="col-start-1"
               InputProps={{
@@ -367,14 +528,14 @@ const MasterItemForm = (props: IMasterItemForm) => {
               }}
             />
             <TextFieldElement
-              name="qtysellmax"
+              name="masteritem_qtysellmax"
               label="Maximum Sales Qty"
               InputProps={{
                 inputComponent: NumericFormatCustom as never,
               }}
             />
             <TextareaAutosizeElement
-              name="note"
+              name="masteritem_catatan"
               label="Note"
               rows={3}
               className="col-start-1"
@@ -390,9 +551,295 @@ const MasterItemForm = (props: IMasterItemForm) => {
               in={watch("isMultipleUnit")}
               className="col-span-3 col-start-1"
             >
-              Testing dulu
+              <TableContainer
+                component={Paper}
+                elevation={0}
+                variant="outlined"
+              >
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell width="5%" align="right">
+                        No
+                      </TableCell>
+                      <TableCell width="35%">Unit</TableCell>
+                      <TableCell width="15%" align="right">
+                        Qty
+                      </TableCell>
+                      <TableCell width="5%">Base</TableCell>
+                      <TableCell width="25%">Barcode</TableCell>
+                      <TableCell width="5%" align="center">
+                        <Delete />
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {fieldsUnit.map((row, index) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="right">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align="right">
+                          <AutocompleteMasterOther
+                            name={`multiple_uom.${index}.item_uom`}
+                            required
+                            type="uom"
+                            autocompleteProps={{
+                              size: "small",
+                            }}
+                            textFieldProps={{
+                              hiddenLabel: true,
+                              onBlur: handleRenderVariants,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <TextFieldElement
+                            name={`multiple_uom.${index}.masteritemuom_convertionqty`}
+                            hiddenLabel
+                            InputProps={{
+                              inputComponent: NumericFormatCustom as never,
+                              onBlur: handleRenderVariants,
+                            }}
+                            fullWidth
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>{selectedUnitBase?.label ?? "-"}</TableCell>
+                        <TableCell>
+                          <TextFieldElement
+                            name={`multiple_uom.${index}.masteritemuom_barcode`}
+                            hiddenLabel
+                            fullWidth
+                            size="small"
+                            InputProps={{
+                              onBlur: handleRenderVariants,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="center">
+                          <IconButton
+                            onClick={() => void removeUnit(index)}
+                            color="error"
+                            size="small"
+                          >
+                            <Close />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={6}>
+                        <Button
+                          startIcon={<Add />}
+                          onClick={() =>
+                            void appendUnit({
+                              item_uom: null,
+                              masteritemuom_convertionqty: 0,
+                              masteritemuom_barcode: "",
+                            })
+                          }
+                          size="large"
+                          fullWidth
+                        >
+                          Add New
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              </TableContainer>
             </Collapse>
           </Box>
+          <Box
+            component={Paper}
+            className="grid grid-cols-1 gap-4 p-4 md:grid-cols-3"
+          >
+            <CheckboxElement label="Have Variant?" name="isVariant" />
+            <Collapse
+              in={watch("isVariant")}
+              className="col-span-3 col-start-1"
+            >
+              <TableContainer
+                component={Paper}
+                elevation={0}
+                variant="outlined"
+              >
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell width="5%" align="right">
+                        No
+                      </TableCell>
+                      <TableCell width="20%">Variant</TableCell>
+                      <TableCell width="70%">Values</TableCell>
+                      <TableCell width="5%" align="center">
+                        <Delete />
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {fieldsVariantCategory.map((row, index) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="right">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>
+                          <TextFieldElement
+                            name={`variantCategories.${index}.name`}
+                            hiddenLabel
+                            fullWidth
+                            size="small"
+                            required
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <AutocompleteElement
+                            options={[]}
+                            required
+                            multiple
+                            name={`variantCategories.${index}.values`}
+                            textFieldProps={{
+                              hiddenLabel: true,
+                              // onBlur: handleRenderVariants,
+                            }}
+                            autocompleteProps={{
+                              size: "small",
+                              noOptionsText: "Type your own variants",
+                              freeSolo: true,
+                              onChange: (_, value: string[]) => {
+                                setValue(`variantCategories.${index}.values`, [
+                                  ...new Set(value),
+                                ]);
+                                handleRenderVariants();
+                              },
+                              renderTags: (
+                                value: readonly string[],
+                                getTagProps
+                              ) =>
+                                value.map((option: string, index: number) => (
+                                  // eslint-disable-next-line react/jsx-key
+                                  <Chip
+                                    variant="filled"
+                                    label={option}
+                                    size="small"
+                                    {...getTagProps({ index })}
+                                  />
+                                )),
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="center">
+                          <IconButton
+                            onClick={() => void removeVariantCategory(index)}
+                            color="error"
+                            size="small"
+                          >
+                            <Close />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  {fieldsVariantCategory.length < 3 && (
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell colSpan={4}>
+                          <Button
+                            startIcon={<Add />}
+                            onClick={() =>
+                              void appendVariantCategory({
+                                name: "",
+                                values: [],
+                              })
+                            }
+                            size="large"
+                            fullWidth
+                          >
+                            Add New
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableFooter>
+                  )}
+                </Table>
+              </TableContainer>
+            </Collapse>
+          </Box>
+          {fieldsVariant.length > 0 && (
+            <Box component={Paper} className="p-4">
+              <Typography gutterBottom>Variant Results:</Typography>
+              <TableContainer
+                component={Paper}
+                elevation={0}
+                variant="outlined"
+                sx={{ maxHeight: 340 }}
+              >
+                <Table size="small" stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell width="5%" align="right">
+                        No
+                      </TableCell>
+                      <TableCell width="45%">Variant</TableCell>
+                      <TableCell width="10%">Unit</TableCell>
+                      <TableCell width="20%">Barcode</TableCell>
+                      <TableCell width="20%">Price</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {fieldsVariant.map((row, index) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="right">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>{row.description}</TableCell>
+                        <TableCell>{row.unit.label}</TableCell>
+                        <TableCell>
+                          <TextFieldElement
+                            name={`variants.${index}.barcode`}
+                            hiddenLabel
+                            fullWidth
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {row.unit.convertionqty === 1 && (
+                            <TextFieldElement
+                              name={`variants.${index}.price`}
+                              hiddenLabel
+                              fullWidth
+                              size="small"
+                              InputProps={{
+                                inputComponent: NumericFormatCustom as never,
+                              }}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          )}
           <Box className="flex flex-col justify-between md:flex-row">
             <div></div>
             <div>
