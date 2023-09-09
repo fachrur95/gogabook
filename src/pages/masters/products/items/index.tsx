@@ -21,7 +21,7 @@ import {
   Button,
   Chip,
   DialogContent,
-  DialogTitle,
+  // DialogTitle,
   IconButton,
   Link as MuiLink,
   Paper,
@@ -51,6 +51,7 @@ import { itemsTabs } from "@/components/tabs/data";
 import { useRouter } from "next/router";
 import ModalTransition from "@/components/dialogs/ModalTransition";
 import MasterItemForm from "@/components/forms/MasterItemForm";
+import type { FormSlugType } from "@/types/global";
 
 const sortDefault: GridSortModel = [
   { field: "masteritem_description", sort: "asc" },
@@ -125,12 +126,11 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
         }
         return (
           <Link
-            // href={{
-            //   pathname: "/form/[[...slug]]",
-            //   query: { slug: [params.row.id, "view"] },
-            // }}
-            href={`/masters/products/items/?slug=${params.row.id}`}
-            as={`/masters/products/items/${params.row.id}`}
+            href={{
+              pathname: "/masters/products/items",
+              query: { slug: ["v", params.row.id] },
+            }}
+            as={`/masters/products/items/v/${params.row.id}`}
           >
             <MuiLink component="button">{display}</MuiLink>
           </Link>
@@ -210,7 +210,15 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
               {
                 icon: <EditIcon />,
                 label: "Edit",
-                onClick: (params) => console.log(params),
+                onClick: (params) =>
+                  params &&
+                  router.push(
+                    {
+                      pathname: "/masters/products/items",
+                      query: { slug: ["f", params] },
+                    },
+                    `/masters/products/items/f/${params}`
+                  ),
               },
               {
                 icon: <FileCopyIcon />,
@@ -333,8 +341,12 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
                 <Refresh />
               </IconButton>
               <Link
-                href="/masters/products/items/?slug=form"
-                as="/masters/products/items/form"
+                href={{
+                  pathname: "/masters/products/items",
+                  query: { slug: ["f"] },
+                }}
+                // href="/masters/products/items/?slug=['f']"
+                as="/masters/products/items/f"
               >
                 <Button variant="contained" endIcon={<Add />}>
                   Create New
@@ -367,7 +379,7 @@ const MasterItemPage: MyPage<{ sessionData: ISessionData }> = ({
               fullWidth
             >
               <DialogContent>
-                <MasterItemForm slug={router.query.slug as string} />
+                <MasterItemForm slug={router.query.slug as FormSlugType} />
               </DialogContent>
             </ModalTransition>
           )}

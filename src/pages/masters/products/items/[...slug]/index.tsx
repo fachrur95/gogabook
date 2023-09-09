@@ -7,6 +7,7 @@ import jwtDecode from "jwt-decode";
 import type { ISessionData } from "@/types/session";
 import MasterItemForm from "@/components/forms/MasterItemForm";
 import { useRouter } from "next/router";
+import type { FormSlugType } from "@/types/global";
 
 const MasterItemFormPage: MyPage = () => {
   const router = useRouter();
@@ -18,7 +19,7 @@ const MasterItemFormPage: MyPage = () => {
         <title>{`Gogabook | Form Master Item`}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <MasterItemForm slug={slug as string} />
+      <MasterItemForm slug={slug as FormSlugType} />
     </>
   );
 };

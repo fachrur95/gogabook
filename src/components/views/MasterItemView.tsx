@@ -141,7 +141,7 @@ interface IMasterItemForm {
   slug: FormSlugType;
 }
 
-const MasterItemForm = (props: IMasterItemForm) => {
+const MasterItemView = (props: IMasterItemForm) => {
   const [mode, setMode] = useState<"create" | "update" | "view">("create");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const formContext = useForm<MasterItemBodyType>({ defaultValues });
@@ -934,4 +934,4 @@ const MasterItemForm = (props: IMasterItemForm) => {
   );
 };
 
-export default MasterItemForm;
+export default MasterItemView;
