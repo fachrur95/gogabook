@@ -147,7 +147,7 @@ const MasterItemForm = (props: IMasterItemForm) => {
   const formContext = useForm<MasterItemBodyType>({ defaultValues });
   const { slug } = props;
 
-  console.log({ mode });
+  // console.log({ mode });
 
   const {
     control,

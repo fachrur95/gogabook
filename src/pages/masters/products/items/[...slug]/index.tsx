@@ -8,6 +8,9 @@ import type { ISessionData } from "@/types/session";
 import MasterItemForm from "@/components/forms/MasterItemForm";
 import { useRouter } from "next/router";
 import type { FormSlugType } from "@/types/global";
+import axios from "axios";
+import type { IMasterItem } from "@/types/masters/masterItem";
+import { env } from "@/env.mjs";
 
 const MasterItemFormPage: MyPage = () => {
   const router = useRouter();
@@ -60,6 +63,47 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         destination: "/credentials/store",
+        permanent: false,
+      },
+    };
+  }
+  const query = ctx.query;
+  const slug = query.slug as FormSlugType;
+  const [path, id] = slug;
+
+  if (path !== "f" && path !== "v") {
+    return {
+      redirect: {
+        destination: "/masters/products/items",
+        permanent: false,
+      },
+    };
+  }
+
+  let check: IMasterItem | undefined | null = null;
+
+  /*
+    Check if id truly exist
+    If not exist, redirect to form create immediately
+  */
+  if (id) {
+    check = await axios
+      .get<IMasterItem>(`${env.BACKEND_URL}/api/core/items/${id}`, {
+        headers: { Authorization: `Bearer ${session.accessToken}` },
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        return undefined;
+      });
+  }
+
+  if (typeof check === "undefined") {
+    return {
+      redirect: {
+        destination: "/masters/products/items/f",
         permanent: false,
       },
     };
